@@ -421,7 +421,7 @@ export function VirtualKeysTable({ teams, organizations, onSortChange, currentSo
                         {models.length > 3 && !expandedAccordions[info.row.id] && (
                           <Badge size={"xs"} color="gray" className="cursor-pointer">
                             <Text>
-                              +{models.length - 3} {t("keys.table.moreModels")}
+                              +{models.length - 3} {models.length - 3 === 1 ? t("keys.table.moreModel") : t("keys.table.moreModels")}
                             </Text>
                           </Badge>
                         )}

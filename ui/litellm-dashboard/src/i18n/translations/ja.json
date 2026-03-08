@@ -217,6 +217,7 @@
       "rateLimits": "レート制限",
       "allProxyModels": "全プロキシモデル",
       "defaultProxyAdmin": "デフォルトプロキシ管理者",
+      "moreModel": "他のモデル",
       "moreModels": "他のモデル",
       "keyHash": "キーハッシュ",
       "loadingKeys": "キーを読み込み中...",
@@ -670,7 +671,8 @@
     "tokens": "トークン",
     "totalRequests2": "総リクエスト",
     "credentialBannerMessage": "再利用可能な認証情報はタグとして自動的に追跡されます",
-    "credentialBannerDesc": "再利用可能な認証情報が使用されると、このビューにプレフィックス付きで表示されます",
+    "credentialBannerDescBefore": "再利用可能な認証情報が使用されると、",
+    "credentialBannerDescAfter": "プレフィックス付きのタグとしてこのビューに表示されます。",
     "exportUsageData": "利用データをエクスポート"
   },
   "logs": {

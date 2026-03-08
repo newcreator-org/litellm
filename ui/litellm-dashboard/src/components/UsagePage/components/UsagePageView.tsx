@@ -875,7 +875,9 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                   message={t("usage.credentialBannerMessage")}
                   description={
                     <Typography.Text>
-                      {t("usage.credentialBannerDesc")}
+                      {t("usage.credentialBannerDescBefore")}{" "}
+                      <Typography.Text code>Credential: </Typography.Text>
+                      {t("usage.credentialBannerDescAfter")}
                     </Typography.Text>
                   }
                   closable

@@ -217,6 +217,7 @@
       "rateLimits": "Rate Limits",
       "allProxyModels": "All Proxy Models",
       "defaultProxyAdmin": "Default Proxy Admin",
+      "moreModel": "more model",
       "moreModels": "more models",
       "keyHash": "Key Hash",
       "loadingKeys": "Loading keys...",
@@ -670,7 +671,8 @@
     "tokens": "Tokens",
     "totalRequests2": "Total Requests",
     "credentialBannerMessage": "Reusable credentials are automatically tracked as tags",
-    "credentialBannerDesc": "When a reusable credential is used, it will appear as a tag prefixed with",
+    "credentialBannerDescBefore": "When a reusable credential is used, it will appear as a tag prefixed with",
+    "credentialBannerDescAfter": "in this view.",
     "exportUsageData": "Export Usage Data"
   },
   "logs": {
