@@ -10,6 +10,7 @@ import { Accordion, AccordionBody, AccordionHeader, Button, Col, Grid, Text, Tex
 import { Button as Button2, Form, Input, message, Modal, Radio, Select, Switch, Tag, Tooltip } from "antd";
 import debounce from "lodash/debounce";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "@/i18n";
 import { rolesWithWriteAccess } from "../../utils/roles";
 import AgentSelector from "../agent_management/AgentSelector";
 import { mapDisplayToInternalNames } from "../callback_info_helpers";
@@ -158,6 +159,7 @@ export const fetchUserModels = async (
  * ─────────────────────────────────────────────────────────────────────────
  */
 const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOpenCreate, prefillData }) => {
+  const { t } = useTranslation();
   const { accessToken, userId: userID, userRole, premiumUser } = useAuthorized();
   const canEditGuardrails = premiumUser || (userRole != null && rolesWithWriteAccess.includes(userRole));
   const { data: projects, isLoading: isProjectsLoading } = useProjects();
@@ -654,19 +656,19 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
     <div>
       {userRole && rolesWithWriteAccess.includes(userRole) && (
         <Button className="mx-auto" onClick={() => setIsModalVisible(true)}>
-          + Create New Key
+          {t("keys.createNewKey")}
         </Button>
       )}
       <Modal open={isModalVisible} width={1000} footer={null} onOk={handleOk} onCancel={handleCancel}>
         <Form form={form} onFinish={handleCreate} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} labelAlign="left">
           {/* Section 1: Key Ownership */}
           <div className="mb-8">
-            <Title className="mb-4">Key Ownership</Title>
+            <Title className="mb-4">{t("keys.ownership.title")}</Title>
             <Form.Item
               label={
                 <span>
-                  Owned By{" "}
-                  <Tooltip title="Select who will own this Virtual Key">
+                  {t("keys.ownership.ownedBy")}{" "}
+                  <Tooltip title={t("keys.ownership.ownedByTooltip")}>
                     <InfoCircleOutlined style={{ marginLeft: "4px" }} />
                   </Tooltip>
                 </span>
@@ -674,11 +676,11 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
               className="mb-4"
             >
               <Radio.Group onChange={(e) => setKeyOwner(e.target.value)} value={keyOwner}>
-                <Radio value="you">You</Radio>
-                <Radio value="service_account">Service Account</Radio>
-                {userRole === "Admin" && <Radio value="another_user">Another User</Radio>}
+                <Radio value="you">{t("keys.ownership.you")}</Radio>
+                <Radio value="service_account">{t("keys.ownership.serviceAccount")}</Radio>
+                {userRole === "Admin" && <Radio value="another_user">{t("keys.ownership.anotherUser")}</Radio>}
                 <Radio value="agent">
-                  Agent <Tag color="purple">New</Tag>
+                  {t("keys.ownership.agent")} <Tag color="purple">{t("navbar.new")}</Tag>
                 </Radio>
               </Radio.Group>
             </Form.Item>
@@ -687,8 +689,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
               <Form.Item
                 label={
                   <span>
-                    User ID{" "}
-                    <Tooltip title="The user who will own this key and be responsible for its usage">
+                    {t("keys.ownership.userId")}{" "}
+                    <Tooltip title={t("keys.ownership.userIdTooltip")}>
                       <InfoCircleOutlined style={{ marginLeft: "4px" }} />
                     </Tooltip>
                   </span>
@@ -706,7 +708,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   <div style={{ display: "flex", marginBottom: "8px" }}>
                     <Select
                       showSearch
-                      placeholder="Type email to search for users"
+                      placeholder={t("keys.ownership.searchByEmail")}
                       filterOption={false}
                       onSearch={handleUserSearch}
                       onSelect={(value, option) => handleUserSelect(value, option as UserOption)}
@@ -714,13 +716,13 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       loading={userSearchLoading}
                       allowClear
                       style={{ width: "100%" }}
-                      notFoundContent={userSearchLoading ? "Searching..." : "No users found"}
+                      notFoundContent={userSearchLoading ? t("common.searching") : t("common.noResultsFound")}
                     />
                     <Button2 onClick={() => setIsCreateUserModalVisible(true)} style={{ marginLeft: "8px" }}>
-                      Create User
+                      {t("keys.ownership.createUser")}
                     </Button2>
                   </div>
-                  <div className="text-xs text-gray-500">Search by email to find users</div>
+                  <div className="text-xs text-gray-500">{t("keys.ownership.searchByEmailHint")}</div>
                 </div>
               </Form.Item>
             )}
@@ -728,12 +730,12 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
               <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-md">
                 <div className="mb-3">
                   <span className="text-sm font-medium text-gray-700">
-                    Select Agent <span className="text-red-500">*</span>
+                    {t("keys.ownership.selectAgent")} <span className="text-red-500">*</span>
                   </span>
                 </div>
                 <Select
                   showSearch
-                  placeholder="Select an agent"
+                  placeholder={t("keys.ownership.selectAgent")}
                   style={{ width: "100%" }}
                   value={selectedAgentId}
                   onChange={(value) => setSelectedAgentId(value)}
@@ -746,15 +748,15 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   }))}
                 />
                 <div className="text-xs text-gray-500 mt-2">
-                  This key will be used by the selected agent to make requests to LiteLLM
+                  {t("keys.ownership.agentKeyDescription")}
                 </div>
               </div>
             )}
             <Form.Item
               label={
                 <span>
-                  Team{" "}
-                  <Tooltip title="The team this key belongs to, which determines available models and budget limits">
+                  {t("keys.ownership.team")}{" "}
+                  <Tooltip title={t("keys.ownership.teamTooltip")}>
                     <InfoCircleOutlined style={{ marginLeft: "4px" }} />
                   </Tooltip>
                 </span>
@@ -826,7 +828,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
           {/* Section 2: Key Details */}
           {!isFormDisabled && (
             <div className="mb-8">
-              <Title className="mb-4">Key Details</Title>
+              <Title className="mb-4">{t("keys.details.title")}</Title>
               <Form.Item
                 label={
                   <span>

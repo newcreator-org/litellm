@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/i18n";
 import { X, LucideIcon, Check } from "lucide-react";
 import { Button } from "antd";
 import { useDisableShowPrompts } from "@/app/(dashboard)/hooks/useDisableShowPrompts";
@@ -31,6 +32,7 @@ export function NudgePrompt({
   buttonStyle,
 }: NudgePromptProps) {
   const disableShowPrompts = useDisableShowPrompts();
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(100);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -86,7 +88,7 @@ export function NudgePrompt({
             </div>
             <div className="flex-1">
               <p className="text-sm text-gray-700 font-medium">
-                Got it, we will not ask again. Reactivate this at any time in the User Menu.
+                {t("survey.dontAskAgainConfirmation")}
               </p>
             </div>
           </div>
@@ -138,7 +140,7 @@ export function NudgePrompt({
             onClick={handleDontAskAgain}
             className="text-xs"
           >
-            Don&apos;t ask me again
+            {t("survey.dontAskAgain")}
           </Button>
         </div>
       </div>
