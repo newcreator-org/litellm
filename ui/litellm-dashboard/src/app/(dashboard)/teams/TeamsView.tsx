@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "@/i18n";
 import { teamDeleteCall, Organization } from "@/components/networking";
 import { fetchTeams } from "@/components/common_components/fetch_teams";
 import { Form } from "antd";
@@ -80,6 +81,7 @@ const TeamsView: React.FC<TeamProps> = ({
 
   const [loggingSettings, setLoggingSettings] = useState<any[]>([]);
   const [modelAliases, setModelAliases] = useState<{ [key: string]: string }>({});
+  const { t } = useTranslation();
   const { lastRefreshed, onRefreshClick: handleRefreshClick } = useFetchTeams({ currentOrg, setTeams });
 
   useEffect(() => {
@@ -247,7 +249,7 @@ const TeamsView: React.FC<TeamProps> = ({
         <Col numColSpan={1} className="flex flex-col gap-2">
           {(userRole == "Admin" || userRole == "Org Admin") && (
             <Button className="w-fit" onClick={() => setIsTeamModalVisible(true)}>
-              + Create New Team
+              {t("teams.view.createNewTeam")}
             </Button>
           )}
           {selectedTeamId ? (
@@ -286,7 +288,7 @@ const TeamsView: React.FC<TeamProps> = ({
             <TeamsHeaderTabs lastRefreshed={lastRefreshed} onRefresh={handleRefreshClick} userRole={userRole}>
               <TabPanel>
                 <Text>
-                  Click on &ldquo;Team ID&rdquo; to view team details <b>and</b> manage team members.
+                  {t("teams.view.clickTeamIdToView")}
                 </Text>
                 <Grid numItems={1} className="gap-2 pt-2 pb-2 h-[75vh] w-full mt-2">
                   <Col numColSpan={1}>

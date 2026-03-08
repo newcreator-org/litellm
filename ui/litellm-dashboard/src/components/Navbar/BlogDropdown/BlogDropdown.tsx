@@ -4,6 +4,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Space, Typography } from "antd";
 import type { MenuProps } from "antd";
 import React from "react";
+import { useTranslation } from "@/i18n";
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -20,6 +21,7 @@ export const BlogDropdown: React.FC = () => {
   const disableBlogPosts = useDisableBlogPosts();
 
   const { data, isLoading, isError, refetch } = useBlogPosts();
+  const { t } = useTranslation();
 
   if (disableBlogPosts) {
     return null;
@@ -35,9 +37,9 @@ export const BlogDropdown: React.FC = () => {
         key: "error",
         label: (
           <Space>
-            <Text type="danger">Failed to load posts</Text>
+            <Text type="danger">{t("navbar.failedToLoadPosts")}</Text>
             <Button size="small" onClick={() => refetch()}>
-              Retry
+              {t("common.retry")}
             </Button>
           </Space>
         ),
@@ -45,7 +47,7 @@ export const BlogDropdown: React.FC = () => {
       },
     ];
   } else if (!data || data.posts.length === 0) {
-    items = [{ key: "empty", label: <Text type="secondary">No posts available</Text>, disabled: true }];
+    items = [{ key: "empty", label: <Text type="secondary">{t("navbar.noPostsAvailable")}</Text>, disabled: true }];
   } else {
     items = [
       ...data.posts.slice(0, 5).map((post: BlogPost) => ({
@@ -67,7 +69,7 @@ export const BlogDropdown: React.FC = () => {
         key: "view-all",
         label: (
           <a href="https://docs.litellm.ai/blog" target="_blank" rel="noopener noreferrer">
-            View all posts
+            {t("navbar.viewAllPosts")}
           </a>
         ),
       },
@@ -76,7 +78,7 @@ export const BlogDropdown: React.FC = () => {
 
   return (
     <Dropdown menu={{ items }} trigger={["hover"]} placement="bottomRight">
-      <Button type="text">Blog</Button>
+      <Button type="text">{t("navbar.blog")}</Button>
     </Dropdown>
   );
 };

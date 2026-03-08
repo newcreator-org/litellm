@@ -8,6 +8,7 @@ import { uiAuditLogsCall } from "../networking";
 import { AuditLogEntry } from "./columns";
 import { AuditLogDrawer } from "./AuditLogDrawer/AuditLogDrawer";
 import DefaultProxyAdminTag from "../common_components/DefaultProxyAdminTag";
+import { useTranslation } from "@/i18n";
 
 const { Search } = Input;
 
@@ -23,13 +24,13 @@ interface AuditLogsProps {
 const asset_logos_folder = "../ui/assets/";
 export const auditLogsPreviewImg = `${asset_logos_folder}audit-logs-preview.png`;
 
-const TABLE_NAME_DISPLAY: Record<string, string> = {
-  LiteLLM_VerificationToken: "Keys",
-  LiteLLM_TeamTable: "Teams",
-  LiteLLM_UserTable: "Users",
-  LiteLLM_OrganizationTable: "Organizations",
-  LiteLLM_ProxyModelTable: "Models",
-};
+const getTableNameDisplay = (t: (key: string) => string): Record<string, string> => ({
+  LiteLLM_VerificationToken: t("logs.audit.tableNames.keys"),
+  LiteLLM_TeamTable: t("logs.audit.tableNames.teams"),
+  LiteLLM_UserTable: t("logs.audit.tableNames.users"),
+  LiteLLM_OrganizationTable: t("logs.audit.tableNames.organizations"),
+  LiteLLM_ProxyModelTable: t("logs.audit.tableNames.models"),
+});
 
 const ACTION_COLOR: Record<string, string> = {
   created: "green",
@@ -48,6 +49,8 @@ export default function AuditLogs({
   isActive,
   premiumUser,
 }: AuditLogsProps) {
+  const { t } = useTranslation();
+  const TABLE_NAME_DISPLAY = getTableNameDisplay(t);
   const [page, setPage] = useState(1);
 
   // Filter state
@@ -107,7 +110,7 @@ export default function AuditLogs({
 
   const columns: ColumnsType<AuditLogEntry> = [
     {
-      title: "Timestamp",
+      title: t("logs.columns.timestamp"),
       dataIndex: "updated_at",
       key: "updated_at",
       width: 200,
@@ -118,7 +121,7 @@ export default function AuditLogs({
       ),
     },
     {
-      title: "Action",
+      title: t("logs.columns.action"),
       dataIndex: "action",
       key: "action",
       width: 100,
@@ -129,14 +132,14 @@ export default function AuditLogs({
       ),
     },
     {
-      title: "Table",
+      title: t("logs.columns.tableName"),
       dataIndex: "table_name",
       key: "table_name",
       width: 130,
       render: (val: string) => TABLE_NAME_DISPLAY[val] ?? val,
     },
     {
-      title: "Object ID",
+      title: t("logs.audit.objectId"),
       dataIndex: "object_id",
       key: "object_id",
       render: (val: string) => (
@@ -144,14 +147,14 @@ export default function AuditLogs({
       ),
     },
     {
-      title: "Changed By",
+      title: t("logs.audit.changedBy"),
       dataIndex: "changed_by",
       key: "changed_by",
       width: 200,
       render: (val: string) => <DefaultProxyAdminTag userId={val} />,
     },
     {
-      title: "API Key (Hash)",
+      title: t("logs.columns.apiKeyHash"),
       dataIndex: "changed_by_api_key",
       key: "changed_by_api_key",
       width: 140,
@@ -167,12 +170,12 @@ export default function AuditLogs({
   if (!premiumUser) {
     return (
       <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <h1 style={{ display: "block", marginBottom: "10px" }}>✨ Enterprise Feature.</h1>
+        <h1 style={{ display: "block", marginBottom: "10px" }}>✨ {t("logs.audit.enterpriseFeature")}</h1>
         <p style={{ display: "block", marginBottom: "10px" }}>
-          This is a LiteLLM Enterprise feature, and requires a valid key to use.
+          {t("logs.audit.enterpriseDesc")}
         </p>
         <p style={{ display: "block", marginBottom: "20px", fontStyle: "italic" }}>
-          Here&apos;s a preview of what Audit Logs offer:
+          {t("logs.audit.previewDescription")}
         </p>
         <img
           src={auditLogsPreviewImg}
@@ -201,61 +204,61 @@ export default function AuditLogs({
         {/* Header */}
         <div className="border-b px-6 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-semibold">Audit Logs</h1>
+            <h1 className="text-xl font-semibold">{t("logs.audit.title")}</h1>
           </div>
 
           {/* Filters + pagination on same row */}
           <div className="flex flex-wrap items-center gap-3">
             <Search
-              placeholder="Object ID"
+              placeholder={t("logs.audit.objectId")}
               allowClear
               style={{ width: 200 }}
               onSearch={(val) => { setObjectId(val); resetPage(); }}
               onChange={(e) => { if (!e.target.value) { setObjectId(""); resetPage(); } }}
             />
             <Search
-              placeholder="Changed By"
+              placeholder={t("logs.audit.changedBy")}
               allowClear
               style={{ width: 180 }}
               onSearch={(val) => { setChangedBy(val); resetPage(); }}
               onChange={(e) => { if (!e.target.value) { setChangedBy(""); resetPage(); } }}
             />
             <Search
-              placeholder="Team ID"
+              placeholder={t("logs.audit.teamId")}
               allowClear
               style={{ width: 180 }}
               onSearch={(val) => { setTeamId(val); resetPage(); }}
               onChange={(e) => { if (!e.target.value) { setTeamId(""); resetPage(); } }}
             />
             <Search
-              placeholder="Key Hash"
+              placeholder={t("logs.audit.keyHash")}
               allowClear
               style={{ width: 180 }}
               onSearch={(val) => { setKeyHash(val); resetPage(); }}
               onChange={(e) => { if (!e.target.value) { setKeyHash(""); resetPage(); } }}
             />
             <Select
-              placeholder="All Actions"
+              placeholder={t("logs.audit.allActions")}
               allowClear
               style={{ width: 140 }}
               options={[
-                { label: "Created", value: "created" },
-                { label: "Updated", value: "updated" },
-                { label: "Deleted", value: "deleted" },
-                { label: "Rotated", value: "rotated" },
+                { label: t("logs.audit.created"), value: "created" },
+                { label: t("logs.audit.updated"), value: "updated" },
+                { label: t("logs.audit.deleted"), value: "deleted" },
+                { label: t("logs.audit.rotated"), value: "rotated" },
               ]}
               onChange={(val) => { setAction(val); resetPage(); }}
             />
             <Select
-              placeholder="All Tables"
+              placeholder={t("logs.audit.allTables")}
               allowClear
               style={{ width: 150 }}
               options={[
-                { label: "Keys", value: "LiteLLM_VerificationToken" },
-                { label: "Teams", value: "LiteLLM_TeamTable" },
-                { label: "Users", value: "LiteLLM_UserTable" },
-                { label: "Organizations", value: "LiteLLM_OrganizationTable" },
-                { label: "Models", value: "LiteLLM_ProxyModelTable" },
+                { label: t("logs.audit.tableNames.keys"), value: "LiteLLM_VerificationToken" },
+                { label: t("logs.audit.tableNames.teams"), value: "LiteLLM_TeamTable" },
+                { label: t("logs.audit.tableNames.users"), value: "LiteLLM_UserTable" },
+                { label: t("logs.audit.tableNames.organizations"), value: "LiteLLM_OrganizationTable" },
+                { label: t("logs.audit.tableNames.models"), value: "LiteLLM_ProxyModelTable" },
               ]}
               onChange={(val) => { setTableName(val); resetPage(); }}
             />
@@ -271,7 +274,7 @@ export default function AuditLogs({
                 current={page}
                 pageSize={PAGE_SIZE}
                 total={total}
-                showTotal={(t) => `${t} total`}
+                showTotal={(total) => `${total} ${t("logs.audit.total")}`}
                 showSizeChanger={false}
                 size="small"
                 onChange={(p) => setPage(p)}

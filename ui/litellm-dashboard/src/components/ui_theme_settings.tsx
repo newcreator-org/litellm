@@ -3,6 +3,7 @@ import { Card, Title, Text, TextInput, Button } from "@tremor/react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getProxyBaseUrl, getGlobalLitellmHeaderName } from "@/components/networking";
 import NotificationsManager from "./molecules/notifications_manager";
+import { useTranslation } from "@/i18n";
 
 interface UIThemeSettingsProps {
   userID: string | null;
@@ -11,6 +12,7 @@ interface UIThemeSettingsProps {
 }
 
 const UIThemeSettings: React.FC<UIThemeSettingsProps> = ({ userID, userRole, accessToken }) => {
+  const { t } = useTranslation();
   const { logoUrl, setLogoUrl, faviconUrl, setFaviconUrl } = useTheme();
   const [logoUrlInput, setLogoUrlInput] = useState<string>("");
   const [faviconUrlInput, setFaviconUrlInput] = useState<string>("");
@@ -60,13 +62,13 @@ const UIThemeSettings: React.FC<UIThemeSettingsProps> = ({ userID, userRole, acc
         }),
       });
       if (response.ok) {
-        NotificationsManager.success("Theme settings updated successfully!");
+        NotificationsManager.success(t("uiTheme.updatedSuccess"));
         setLogoUrl(logoUrlInput || null);
         setFaviconUrl(faviconUrlInput || null);
       } else { throw new Error("Failed to update settings"); }
     } catch (error) {
       console.error("Error updating theme settings:", error);
-      NotificationsManager.fromBackend("Failed to update theme settings");
+      NotificationsManager.fromBackend(t("uiTheme.updateFailed"));
     } finally { setLoading(false); }
   };
 
@@ -85,11 +87,11 @@ const UIThemeSettings: React.FC<UIThemeSettingsProps> = ({ userID, userRole, acc
         },
         body: JSON.stringify({ logo_url: null, favicon_url: null }),
       });
-      if (response.ok) { NotificationsManager.success("Theme settings reset to default!"); }
+      if (response.ok) { NotificationsManager.success(t("uiTheme.resetSuccess")); }
       else { throw new Error("Failed to reset"); }
     } catch (error) {
       console.error("Error resetting theme settings:", error);
-      NotificationsManager.fromBackend("Failed to reset theme settings");
+      NotificationsManager.fromBackend(t("uiTheme.resetFailed"));
     } finally { setLoading(false); }
   };
 
@@ -98,26 +100,26 @@ const UIThemeSettings: React.FC<UIThemeSettingsProps> = ({ userID, userRole, acc
   return (
     <div className="w-full mx-auto max-w-4xl px-6 py-8">
       <div className="mb-8">
-        <Title className="text-2xl font-bold mb-2">UI Theme Customization</Title>
-        <Text className="text-gray-600">Customize your LiteLLM admin dashboard with a custom logo and favicon.</Text>
+        <Title className="text-2xl font-bold mb-2">{t("uiTheme.title")}</Title>
+        <Text className="text-gray-600">{t("uiTheme.description")}</Text>
       </div>
       <Card className="shadow-sm p-6">
         <div className="space-y-6">
           <div>
-            <Text className="text-sm font-medium text-gray-700 mb-2 block">Custom Logo URL</Text>
-            <TextInput placeholder="https://example.com/logo.png" value={logoUrlInput}
+            <Text className="text-sm font-medium text-gray-700 mb-2 block">{t("uiTheme.customLogoUrl")}</Text>
+            <TextInput placeholder={t("uiTheme.customLogoPlaceholder")} value={logoUrlInput}
               onValueChange={(v) => { setLogoUrlInput(v); setLogoUrl(v || null); }} className="w-full" />
-            <Text className="text-xs text-gray-500 mt-1">Enter a URL for your custom logo or leave empty for default</Text>
+            <Text className="text-xs text-gray-500 mt-1">{t("uiTheme.customLogoHelp")}</Text>
           </div>
           <div>
-            <Text className="text-sm font-medium text-gray-700 mb-2 block">Custom Favicon URL</Text>
-            <TextInput placeholder="https://example.com/favicon.ico" value={faviconUrlInput}
+            <Text className="text-sm font-medium text-gray-700 mb-2 block">{t("uiTheme.customFaviconUrl")}</Text>
+            <TextInput placeholder={t("uiTheme.customFaviconPlaceholder")} value={faviconUrlInput}
               onValueChange={(v) => { setFaviconUrlInput(v); setFaviconUrl(v || null); }} className="w-full" />
-            <Text className="text-xs text-gray-500 mt-1">Enter a URL for your custom favicon (.ico, .png, or .svg) or leave empty for default</Text>
+            <Text className="text-xs text-gray-500 mt-1">{t("uiTheme.customFaviconHelp")}</Text>
           </div>
           <div className="flex gap-3 pt-4">
-            <Button onClick={handleSave} loading={loading} disabled={loading} color="indigo">Save Changes</Button>
-            <Button onClick={handleReset} loading={loading} disabled={loading} variant="secondary" color="gray">Reset to Default</Button>
+            <Button onClick={handleSave} loading={loading} disabled={loading} color="indigo">{t("uiTheme.saveChanges")}</Button>
+            <Button onClick={handleReset} loading={loading} disabled={loading} variant="secondary" color="gray">{t("uiTheme.resetToDefault")}</Button>
           </div>
         </div>
       </Card>

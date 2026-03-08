@@ -5,23 +5,26 @@ import { Badge, Button, Icon } from "@tremor/react";
 import { Divider, Flex, Popover, Space, Tooltip, Typography } from "antd";
 import { ModelData } from "../../model_dashboard/types";
 import { ProviderLogo } from "./ProviderLogo";
+import { getTranslation } from "@/i18n";
 
 const { Text, Title } = Typography;
+
+const t = getTranslation;
 
 const credentialsInfoPopoverContent = (
   <Space direction="vertical" size={12}>
     <Text strong style={{ fontSize: 13 }}>
-      Credential types
+      {t("models.columns.credentialTypes")}
     </Text>
     <Space direction="vertical" size={8}>
       <Flex align="center" gap={8}>
         <Space direction="vertical">
           <Flex align="center" gap={8}>
             <SyncOutlined style={{ color: "#1890ff" }} />
-            <Title level={5} style={{ margin: 0, color: "#1890ff" }}>Reusable</Title>
+            <Title level={5} style={{ margin: 0, color: "#1890ff" }}>{t("models.columns.reusable")}</Title>
           </Flex>
           <Text type="secondary">
-            Credentials saved in LiteLLM that can be added to models repeatedly.
+            {t("models.columns.reusableDesc")}
           </Text>
         </Space>
       </Flex>
@@ -30,10 +33,10 @@ const credentialsInfoPopoverContent = (
         <Space direction="vertical" size={8}>
           <Flex align="center" gap={8}>
             <EditOutlined style={{ color: "#8c8c8c", fontSize: 14, flexShrink: 0 }} />
-            <Title level={5} style={{ margin: 0 }}>Manual</Title>
+            <Title level={5} style={{ margin: 0 }}>{t("models.columns.manual")}</Title>
           </Flex>
           <Text type="secondary">
-            Credentials added directly during model creation or defined in the config file.
+            {t("models.columns.manualDesc")}
           </Text>
         </Space>
       </Flex>
@@ -54,7 +57,7 @@ export const columns = (
   setExpandedRows: (expandedRows: Set<string>) => void,
 ): ColumnDef<ModelData>[] => [
     {
-      header: () => <span className="text-sm font-semibold">Model ID</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.modelId")}</span>,
       accessorKey: "model_info.id",
       enableSorting: false,
       size: 130,
@@ -76,7 +79,7 @@ export const columns = (
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Model Information</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.modelInformation")}</span>,
       accessorKey: "model_name",
       size: 250,
       minSize: 120,
@@ -96,14 +99,14 @@ export const columns = (
                 style={{ fontSize: 12 }}
                 ellipsis
               >
-                {model.provider || "Unknown provider"}
+                {model.provider || t("models.columns.unknownProvider")}
               </Text>
             </Flex>
 
             <Space direction="vertical" size={6}>
               <Space direction="vertical" size={2} style={{ width: "100%" }}>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Public Model Name
+                  {t("models.columns.publicModelName")}
                 </Text>
                 <Text
                   strong
@@ -117,7 +120,7 @@ export const columns = (
 
               <Space direction="vertical" size={2}>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  LiteLLM Model Name
+                  {t("models.columns.litellmModelName")}
                 </Text>
                 <Text
                   style={{ fontSize: 13 }}
@@ -163,7 +166,7 @@ export const columns = (
     {
       header: () => (
         <span className="flex items-center gap-1">
-          <span className="text-sm font-semibold">Credentials</span>
+          <span className="text-sm font-semibold">{t("models.columns.credentials")}</span>
           <Popover
             content={credentialsInfoPopoverContent}
             placement="bottom"
@@ -197,7 +200,7 @@ export const columns = (
             ) : (
               <>
                 <EditOutlined className="flex-shrink-0" style={{ color: "#8c8c8c", fontSize: 14 }} />
-                <span className="text-xs text-gray-500">Manual</span>
+                <span className="text-xs text-gray-500">{t("models.columns.manual")}</span>
               </>
             )}
           </div>
@@ -205,7 +208,7 @@ export const columns = (
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Created By</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.createdBy")}</span>,
       accessorKey: "model_info.created_by",
       sortingFn: "datetime",
       size: 160,
@@ -221,23 +224,23 @@ export const columns = (
             {/* Created By - Primary */}
             <div
               className="text-xs font-medium text-gray-900 truncate"
-              title={isConfigModel ? "Defined in config" : createdBy || "Unknown"}
+              title={isConfigModel ? t("models.columns.definedInConfig") : createdBy || t("models.columns.unknown")}
             >
-              {isConfigModel ? "Defined in config" : createdBy || "Unknown"}
+              {isConfigModel ? t("models.columns.definedInConfig") : createdBy || t("models.columns.unknown")}
             </div>
             {/* Created At - Secondary */}
             <div
               className="text-xs text-gray-500 truncate mt-0.5"
-              title={isConfigModel ? "Config file" : createdAt || "Unknown date"}
+              title={isConfigModel ? t("models.columns.configFile") : createdAt || t("models.columns.unknownDate")}
             >
-              {isConfigModel ? "-" : createdAt || "Unknown date"}
+              {isConfigModel ? "-" : createdAt || t("models.columns.unknownDate")}
             </div>
           </div>
         );
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Updated At</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.updatedAt")}</span>,
       accessorKey: "model_info.updated_at",
       sortingFn: "datetime",
       size: 120,
@@ -252,7 +255,7 @@ export const columns = (
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Costs</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.costs")}</span>,
       accessorKey: "input_cost",
       size: 120,
       minSize: 80,
@@ -271,19 +274,19 @@ export const columns = (
         }
 
         return (
-          <Tooltip title="Cost per 1M tokens">
+          <Tooltip title={t("models.columns.costPerMTokens")}>
             <div className="flex flex-col min-w-0 w-full">
               {/* Input Cost - Primary */}
-              {inputCost != null && <div className="text-xs font-medium text-gray-900 truncate">In: ${inputCost}</div>}
+              {inputCost != null && <div className="text-xs font-medium text-gray-900 truncate">{t("models.columns.input")}: ${inputCost}</div>}
               {/* Output Cost - Secondary */}
-              {outputCost != null && <div className="text-xs text-gray-500 truncate mt-0.5">Out: ${outputCost}</div>}
+              {outputCost != null && <div className="text-xs text-gray-500 truncate mt-0.5">{t("models.columns.output")}: ${outputCost}</div>}
             </div>
           </Tooltip>
         );
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Team ID</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.teamId")}</span>,
       accessorKey: "model_info.team_id",
       enableSorting: false,
       size: 130,
@@ -309,7 +312,7 @@ export const columns = (
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Model Access Group</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.modelAccessGroup")}</span>,
       accessorKey: "model_info.model_access_group",
       enableSorting: false,
       size: 180,
@@ -370,7 +373,7 @@ export const columns = (
       },
     },
     {
-      header: () => <span className="text-sm font-semibold">Status</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.status")}</span>,
       accessorKey: "model_info.db_model",
       size: 120,
       minSize: 80,
@@ -383,14 +386,14 @@ export const columns = (
           ${model.model_info.db_model ? "bg-blue-50 text-blue-600" : "bg-gray-100 text-gray-600"}
         `}
           >
-            {model.model_info.db_model ? "DB Model" : "Config Model"}
+            {model.model_info.db_model ? t("models.columns.dbModel") : t("models.columns.configModel")}
           </div>
         );
       },
     },
     {
       id: "actions",
-      header: () => <span className="text-sm font-semibold">Actions</span>,
+      header: () => <span className="text-sm font-semibold">{t("models.columns.actions")}</span>,
       size: 60,
       minSize: 40,
       enableResizing: false,
@@ -401,11 +404,11 @@ export const columns = (
         return (
           <div className="flex items-center justify-end gap-2 pr-4">
             {isConfigModel ? (
-              <Tooltip title="Config model cannot be deleted on the dashboard. Please delete it from the config file.">
+              <Tooltip title={t("models.columns.configModelCannotDelete")}>
                 <Icon icon={TrashIcon} size="sm" className="opacity-50 cursor-not-allowed" />
               </Tooltip>
             ) : (
-              <Tooltip title="Delete model">
+              <Tooltip title={t("models.columns.deleteModel")}>
                 <Icon
                   icon={TrashIcon}
                   size="sm"

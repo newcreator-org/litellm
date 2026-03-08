@@ -9,9 +9,11 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, MessageOutlined, MoonOutlined, Su
 import { Button, Switch, Tag } from "antd";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/i18n";
 import { BlogDropdown } from "./Navbar/BlogDropdown/BlogDropdown";
 import { CommunityEngagementButtons } from "./Navbar/CommunityEngagementButtons/CommunityEngagementButtons";
 import UserDropdown from "./Navbar/UserDropdown/UserDropdown";
+import OnboardingTour from "./OnboardingTour";
 
 interface NavbarProps {
   userID: string | null;
@@ -42,6 +44,7 @@ const Navbar: React.FC<NavbarProps> = ({
   isDarkMode,
   toggleDarkMode,
 }) => {
+  const { t } = useTranslation();
   const baseUrl = getProxyBaseUrl();
   const [logoutUrl, setLogoutUrl] = useState("");
   const { data: uiConfig } = useUIConfig();
@@ -81,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-10" data-onboarding="navbar">
       <div className="w-full">
         <div className="flex items-center h-14 px-4">
           <div className="flex items-center flex-shrink-0">
@@ -89,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={onToggleSidebar}
                 className="flex items-center justify-center w-10 h-10 mr-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
-                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                title={sidebarCollapsed ? t("navbar.expandSidebar") : t("navbar.collapseSidebar")}
               >
                 <span className="text-lg">{sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}</span>
               </button>
@@ -156,7 +159,7 @@ const Navbar: React.FC<NavbarProps> = ({
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#1677ff"; }}
             >
               <MessageOutlined style={{ fontSize: 14 }} />
-              Chat
+              {t("navbar.chat")}
               <span style={{
                 fontSize: 9,
                 fontWeight: 700,
@@ -166,7 +169,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 padding: "1px 4px",
                 letterSpacing: "0.05em",
               }}>
-                NEW
+                {t("navbar.new")}
               </span>
             </a>
             <CommunityEngagementButtons />
@@ -182,10 +185,10 @@ const Navbar: React.FC<NavbarProps> = ({
               />
             )}
             <Button type="text" href="https://docs.litellm.ai/docs/" target="_blank" rel="noopener noreferrer">
-              Docs
+              {t("navbar.docs")}
             </Button>
             <BlogDropdown />
-
+            {!isPublicPage && <OnboardingTour autoStart={true} />}
             {!isPublicPage && <UserDropdown onLogout={handleLogout} />}
           </div>
         </div>

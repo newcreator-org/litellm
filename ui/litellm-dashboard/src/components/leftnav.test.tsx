@@ -66,43 +66,46 @@ describe("Sidebar (leftnav)", () => {
     renderWithProviders(<Sidebar {...defaultProps} />);
 
     const topLevelLabels = [
-      "Virtual Keys",
-      "Playground",
-      "Models + Endpoints",
-      "Agents",
-      "MCP Servers",
-      "Guardrails",
-      "Policies",
-      "Tools",
-      "Usage",
-      "Logs",
-      "Guardrails Monitor",
-      "Teams",
-      "Internal Users",
-      "Organizations",
-      "Access Groups",
-      "Budgets",
-      "API Reference",
-      "AI Hub",
-      "Learning Resources",
-      "Experimental",
-      "Settings",
+      "仮想キー",
+      "プレイグラウンド",
+      "モデル + エンドポイント",
+      "エージェント",
+      "MCPサーバー",
+      "ガードレール",
+      "ポリシー",
+      "ツール",
+      "使用状況",
+      "ログ",
+      "ガードレールモニター",
+      "チーム",
+      "内部ユーザー",
+      "組織",
+      "アクセスグループ",
+      "予算",
+      "APIリファレンス",
+      "AIハブ",
+      "学習リソース",
+      "実験的機能",
+      "設定",
     ];
 
     topLevelLabels.forEach((label) => {
-      expect(screen.getByText(label)).toBeInTheDocument();
+      // Use getAllByText because some labels (e.g. "設定") appear as both
+      // a group header and a menu item label in the sidebar
+      const elements = screen.getAllByText(label);
+      expect(elements.length).toBeGreaterThanOrEqual(1);
     });
   });
 
   it("expands a nested tab to reveal its children (Tools > Search Tools)", async () => {
     renderWithProviders(<Sidebar {...defaultProps} />);
 
-    expect(screen.queryByText("Search Tools")).not.toBeInTheDocument();
+    expect(screen.queryByText("検索ツール")).not.toBeInTheDocument();
     act(() => {
-      fireEvent.click(screen.getByText("Tools"));
+      fireEvent.click(screen.getByText("ツール"));
     });
     await waitFor(() => {
-      expect(screen.getByText("Search Tools")).toBeInTheDocument();
+      expect(screen.getByText("検索ツール")).toBeInTheDocument();
     });
   });
   it("has no duplicate keys among all menu items and their children", () => {
@@ -171,6 +174,6 @@ describe("Sidebar (leftnav)", () => {
 
     renderWithProviders(<Sidebar {...defaultProps} />);
 
-    expect(screen.getByText("Organizations")).toBeInTheDocument();
+    expect(screen.getByText("組織")).toBeInTheDocument();
   });
 });

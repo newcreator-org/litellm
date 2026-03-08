@@ -1,6 +1,7 @@
 import { Badge, Button } from "antd";
 import { Filter } from "lucide-react";
 import React from "react";
+import { getTranslation } from "@/i18n";
 
 interface FiltersButtonProps {
   onClick: () => void;
@@ -13,7 +14,7 @@ export const FiltersButton: React.FC<FiltersButtonProps> = ({
   onClick,
   active,
   hasActiveFilters,
-  label = "Filters",
+  label = getTranslation("common.filter"),
 }) => {
   return (
     <Badge color="blue" dot={hasActiveFilters}>

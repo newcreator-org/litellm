@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, Row, useReactTable, getSortedRowModel, SortingState } from "@tanstack/react-table";
 
 import { Table, TableHead, TableHeaderCell, TableBody, TableRow, TableCell } from "@tremor/react";
+import { getTranslation } from "@/i18n";
 
 interface DataTableProps<TData, TValue> {
   data: TData[];
@@ -27,8 +28,8 @@ export function DataTable<TData, TValue>({
   renderChildRows,
   getRowCanExpand,
   isLoading = false,
-  loadingMessage = "🚅 Loading logs...",
-  noDataMessage = "No logs found",
+  loadingMessage = getTranslation("logs.table.loadingLogs"),
+  noDataMessage = getTranslation("logs.table.noLogsFound"),
   enableSorting = false,
 }: DataTableProps<TData, TValue>) {
   const supportsExpansion = !!(renderSubComponent || renderChildRows) && !!getRowCanExpand;

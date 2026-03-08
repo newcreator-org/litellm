@@ -2,9 +2,11 @@ import { useDisableShowPrompts } from "@/app/(dashboard)/hooks/useDisableShowPro
 import { GithubOutlined, SlackOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
+import { useTranslation } from "@/i18n";
 
 export const CommunityEngagementButtons: React.FC = () => {
   const disableShowPrompts = useDisableShowPrompts();
+  const { t } = useTranslation();
 
   // Hide buttons if prompts are disabled
   if (disableShowPrompts) {
@@ -20,7 +22,7 @@ export const CommunityEngagementButtons: React.FC = () => {
         icon={<SlackOutlined />}
         className="shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/50 transition-shadow"
       >
-        Join Slack
+        {t("navbar.joinSlack")}
       </Button>
       <Button
         href="https://github.com/BerriAI/litellm"
@@ -29,7 +31,7 @@ export const CommunityEngagementButtons: React.FC = () => {
         className="shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/50 transition-shadow"
         icon={<GithubOutlined />}
       >
-        Star us on GitHub
+        {t("navbar.starOnGithub")}
       </Button>
     </>
   );

@@ -32,6 +32,7 @@
     "antd": "^5.13.2",
     "cva": "^1.0.0-beta.3",
     "dayjs": "^1.11.19",
+    "driver.js": "^1.4.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.513.0",
     "moment": "^2.30.1",
