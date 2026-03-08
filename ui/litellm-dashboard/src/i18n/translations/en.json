@@ -64,8 +64,6 @@
     "role": "Role",
     "permissions": "Permissions",
     "previous": "Previous",
-    "filters": "Filters",
-    "resetFilters": "Reset Filters",
     "showing": "Showing",
     "of": "of",
     "results": "results",

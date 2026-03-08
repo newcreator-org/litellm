@@ -64,8 +64,6 @@
     "role": "ロール",
     "permissions": "権限",
     "previous": "前へ",
-    "filters": "フィルター",
-    "resetFilters": "フィルターをリセット",
     "showing": "表示中",
     "of": "/",
     "results": "件",

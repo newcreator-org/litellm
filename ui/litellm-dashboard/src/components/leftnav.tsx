@@ -1,7 +1,7 @@
 import { useOrganizations } from "@/app/(dashboard)/hooks/organizations/useOrganizations";
 import { useTeams } from "@/app/(dashboard)/hooks/teams/useTeams";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
-import { useTranslation } from "@/i18n";
+import { useTranslation, getTranslation } from "@/i18n";
 import {
   ApiOutlined,
   AppstoreOutlined,
@@ -364,10 +364,9 @@ function createMenuGroups(t: (key: string) => string): MenuGroup[] {
 }
 
 // Keep backward-compatible export (English defaults)
+// Uses getTranslation() which resolves dot-notation keys from translation files
 const menuGroups: MenuGroup[] = createMenuGroups((key: string) => {
-  // Fallback: return the last segment of the key as-is for backward compat
-  const parts = key.split(".");
-  return parts[parts.length - 1];
+  return getTranslation(key);
 });
 
 const Sidebar: React.FC<SidebarProps> = ({ setPage, defaultSelectedKey, collapsed = false, enabledPagesInternalUsers, enableProjectsUI, disableAgentsForInternalUsers, allowAgentsForTeamAdmins, disableVectorStoresForInternalUsers, allowVectorStoresForTeamAdmins }) => {
