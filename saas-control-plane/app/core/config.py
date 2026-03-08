@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     # Control plane
     control_plane_api_key: str = "sk-cp-secret"  # protect management API
 
+    # JWT authentication
+    jwt_secret_key: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 480  # 8 hours
+
     model_config = {"env_prefix": "CP_", "env_file": ".env", "extra": "ignore"}
 
 

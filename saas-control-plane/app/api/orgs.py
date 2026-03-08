@@ -1,7 +1,9 @@
 """Organisation management endpoints."""
 
+import asyncio
 import logging
 import secrets
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -9,16 +11,22 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.schemas import OrgCreateRequest, OrgListResponse, OrgResponse, OrgUpdateRequest
+from app.core.auth import get_current_user, require_admin
 from app.core.config import settings
-from app.core.security import require_cp_api_key
-from app.db.models import Organization, OrgStatus
+from app.db.models import Organization, OrgStatus, User
 from app.db.schema_manager import _org_dsn, create_org_schema, drop_org_schema
-from app.db.session import get_session
+from app.db.session import async_session_factory, get_session
 from app.orchestrator.base import ContainerConfig
 from app.orchestrator.factory import get_orchestrator
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/orgs", tags=["organisations"], dependencies=[Depends(require_cp_api_key)])
+
+# Read endpoints require any authenticated user; write endpoints require admin.
+router = APIRouter(prefix="/orgs", tags=["organisations"])
+
+# Strong references to background tasks so they aren't garbage-collected mid-execution.
+# See https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
+_background_tasks: set[asyncio.Task[None]] = set()
 
 
 def _generate_id() -> str:
@@ -33,7 +41,11 @@ def _generate_master_key() -> str:
 
 
 @router.post("", response_model=OrgResponse, status_code=status.HTTP_201_CREATED)
-async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get_session)) -> Organization:
+async def create_org(
+    body: OrgCreateRequest,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Provision a new organisation: DB schema + LiteLLM container."""
 
     # Check slug uniqueness
@@ -46,6 +58,7 @@ async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get
     redis_prefix = f"org:{body.slug}"
     master_key = body.master_key or _generate_master_key()
 
+    now = datetime.now(timezone.utc)
     org = Organization(
         id=org_id,
         slug=body.slug,
@@ -55,46 +68,77 @@ async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get
         redis_prefix=redis_prefix,
         master_key=master_key,
         max_budget=body.max_budget,
+        created_at=now,
+        updated_at=now,
     )
     session.add(org)
     await session.commit()
-    await session.refresh(org)
 
-    # --- Async provisioning (could be a background task; kept inline for simplicity) ---
-    try:
-        # 1. Create PostgreSQL schema + tables
-        await create_org_schema(schema_name)
-
-        # 2. Start LiteLLM container
-        orchestrator = get_orchestrator()
-        container = await orchestrator.create_instance(
-            ContainerConfig(
-                org_id=org_id,
-                org_slug=body.slug,
-                image=settings.litellm_image,
-                database_url=_org_dsn(schema_name),
-                redis_host=settings.redis_host,
-                redis_port=settings.redis_port,
-                redis_password=settings.redis_password,
-                redis_prefix=redis_prefix,
-                master_key=master_key,
-                env_extra=body.env_extra,
-            )
+    # Fire-and-forget background provisioning so POST returns quickly.
+    task = asyncio.create_task(
+        _provision_org(
+            org_id=org_id,
+            slug=body.slug,
+            schema_name=schema_name,
+            redis_prefix=redis_prefix,
+            master_key=master_key,
+            env_extra=body.env_extra,
         )
+    )
+    _background_tasks.add(task)
+    task.add_done_callback(_background_tasks.discard)
 
-        org.container_id = container.container_id
-        org.container_url = container.url
-        org.litellm_port = container.port
-        org.status = OrgStatus.ACTIVE
-
-    except Exception as exc:
-        logger.exception("Failed to provision org %s", body.slug)
-        org.status = OrgStatus.ERROR
-        org.error_message = str(exc)
-
-    await session.commit()
-    await session.refresh(org)
     return org
+
+
+async def _provision_org(
+    *,
+    org_id: str,
+    slug: str,
+    schema_name: str,
+    redis_prefix: str,
+    master_key: str,
+    env_extra: dict[str, str] | None,
+) -> None:
+    """Background task: create DB schema + start LiteLLM container for an org."""
+    async with async_session_factory() as session:
+        org = await session.get(Organization, org_id)
+        if org is None:
+            logger.error("Org %s disappeared before provisioning finished", org_id)
+            return
+
+        try:
+            # 1. Create PostgreSQL schema + tables
+            await create_org_schema(schema_name)
+
+            # 2. Start LiteLLM container
+            orchestrator = get_orchestrator()
+            container = await orchestrator.create_instance(
+                ContainerConfig(
+                    org_id=org_id,
+                    org_slug=slug,
+                    image=settings.litellm_image,
+                    database_url=_org_dsn(schema_name),
+                    redis_host=settings.redis_host,
+                    redis_port=settings.redis_port,
+                    redis_password=settings.redis_password,
+                    redis_prefix=redis_prefix,
+                    master_key=master_key,
+                    env_extra=env_extra,
+                )
+            )
+
+            org.container_id = container.container_id
+            org.container_url = container.url
+            org.litellm_port = container.port
+            org.status = OrgStatus.ACTIVE
+
+        except Exception as exc:
+            logger.exception("Failed to provision org %s", slug)
+            org.status = OrgStatus.ERROR
+            org.error_message = str(exc)
+
+        await session.commit()
 
 
 # ---------- LIST ----------
@@ -105,6 +149,7 @@ async def list_orgs(
     status_filter: Optional[str] = Query(None, alias="status"),
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
+    _user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> dict:
     """List organisations with optional status filter."""
@@ -126,7 +171,11 @@ async def list_orgs(
 
 
 @router.get("/{org_id}", response_model=OrgResponse)
-async def get_org(org_id: str, session: AsyncSession = Depends(get_session)) -> Organization:
+async def get_org(
+    org_id: str,
+    _user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Get organisation details."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -141,6 +190,7 @@ async def get_org(org_id: str, session: AsyncSession = Depends(get_session)) -> 
 async def update_org(
     org_id: str,
     body: OrgUpdateRequest,
+    _admin: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ) -> Organization:
     """Update organisation metadata."""
@@ -150,11 +200,11 @@ async def update_org(
 
     if body.display_name is not None:
         org.display_name = body.display_name
-    if body.max_budget is not None:
+    if "max_budget" in body.model_fields_set:
         org.max_budget = body.max_budget
+    org.updated_at = datetime.now(timezone.utc)
 
     await session.commit()
-    await session.refresh(org)
     return org
 
 
@@ -162,7 +212,11 @@ async def update_org(
 
 
 @router.delete("/{org_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_org(org_id: str, session: AsyncSession = Depends(get_session)) -> None:
+async def delete_org(
+    org_id: str,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> None:
     """Destroy org infrastructure and delete the record."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -195,7 +249,11 @@ async def delete_org(org_id: str, session: AsyncSession = Depends(get_session)) 
 
 
 @router.post("/{org_id}/stop", response_model=OrgResponse)
-async def stop_org(org_id: str, session: AsyncSession = Depends(get_session)) -> Organization:
+async def stop_org(
+    org_id: str,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Stop (scale-to-zero) an org's LiteLLM instance."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -206,13 +264,17 @@ async def stop_org(org_id: str, session: AsyncSession = Depends(get_session)) ->
     orchestrator = get_orchestrator()
     await orchestrator.stop_instance(org.container_id)
     org.status = OrgStatus.SUSPENDED
+    org.updated_at = datetime.now(timezone.utc)
     await session.commit()
-    await session.refresh(org)
     return org
 
 
 @router.post("/{org_id}/start", response_model=OrgResponse)
-async def start_org(org_id: str, session: AsyncSession = Depends(get_session)) -> Organization:
+async def start_org(
+    org_id: str,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Wake a suspended org's LiteLLM instance."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -225,13 +287,17 @@ async def start_org(org_id: str, session: AsyncSession = Depends(get_session)) -
     org.container_url = info.url
     org.litellm_port = info.port
     org.status = OrgStatus.ACTIVE
+    org.updated_at = datetime.now(timezone.utc)
     await session.commit()
-    await session.refresh(org)
     return org
 
 
 @router.get("/{org_id}/status")
-async def org_instance_status(org_id: str, session: AsyncSession = Depends(get_session)) -> dict:
+async def org_instance_status(
+    org_id: str,
+    _user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
     """Check the container status of an org's LiteLLM instance."""
     org = await session.get(Organization, org_id)
     if org is None:

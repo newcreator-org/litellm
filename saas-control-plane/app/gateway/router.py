@@ -122,8 +122,8 @@ async def proxy_to_litellm(
         )
     except httpx.ConnectError:
         await client.aclose()
-        msg = f"Cannot connect to org '{org.slug}' instance at {org.container_url}"
-        raise HTTPException(status_code=502, detail=msg)
+        logger.error("Cannot connect to org '%s' instance at %s", org.slug, org.container_url)
+        raise HTTPException(status_code=502, detail=f"Cannot connect to org '{org.slug}' instance")
     except httpx.ReadTimeout:
         await client.aclose()
         raise HTTPException(status_code=504, detail=f"Org '{org.slug}' instance timed out")
