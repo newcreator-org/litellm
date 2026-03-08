@@ -33,6 +33,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { all_admin_roles, internalUserRoles, isAdminRole, rolesWithWriteAccess } from "@/utils/roles";
 import UsageIndicator from "@/components/UsageIndicator";
 import { serverRootPath } from "@/components/networking";
+import { useTranslation } from "@/i18n";
 
 const { Sider } = Layout;
 
@@ -153,186 +154,192 @@ const toHref = (slugOrPath: string) => {
   return `${base}${rel}`;
 };
 
-// ----- Menu config (unchanged labels/icons; same appearance) -----
-const menuItems: MenuItemCfg[] = [
-  { key: "1", page: "api-keys", label: "Virtual Keys", icon: <KeyOutlined style={{ fontSize: 18 }} /> },
-  {
-    key: "3",
-    page: "llm-playground",
-    label: "Test Key",
-    icon: <PlayCircleOutlined style={{ fontSize: 18 }} />,
-    roles: rolesWithWriteAccess,
-  },
-  {
-    key: "2",
-    page: "models",
-    label: "Models + Endpoints",
-    icon: <BlockOutlined style={{ fontSize: 18 }} />,
-    roles: rolesWithWriteAccess,
-  },
-  {
-    key: "12",
-    page: "new_usage",
-    label: "Usage",
-    icon: <BarChartOutlined style={{ fontSize: 18 }} />,
-    roles: [...all_admin_roles, ...internalUserRoles],
-  },
-  { key: "6", page: "teams", label: "Teams", icon: <TeamOutlined style={{ fontSize: 18 }} /> },
-  {
-    key: "17",
-    page: "organizations",
-    label: "Organizations",
-    icon: <BankOutlined style={{ fontSize: 18 }} />,
-    roles: all_admin_roles,
-  },
-  {
-    key: "5",
-    page: "users",
-    label: "Internal Users",
-    icon: <UserOutlined style={{ fontSize: 18 }} />,
-    roles: all_admin_roles,
-  },
-  { key: "14", page: "api_ref", label: "API Reference", icon: <ApiOutlined style={{ fontSize: 18 }} /> },
-  {
-    key: "16",
-    page: "model-hub-table",
-    label: "Model Hub",
-    icon: <AppstoreOutlined style={{ fontSize: 18 }} />,
-  },
-  { key: "15", page: "logs", label: "Logs", icon: <LineChartOutlined style={{ fontSize: 18 }} /> },
-  {
-    key: "11",
-    page: "guardrails",
-    label: "Guardrails",
-    icon: <SafetyOutlined style={{ fontSize: 18 }} />,
-    roles: all_admin_roles,
-  },
-  {
-    key: "28",
-    page: "policies",
-    label: "Policies",
-    icon: <AuditOutlined style={{ fontSize: 18 }} />,
-    roles: all_admin_roles,
-  },
-  {
-    key: "26",
-    page: "tools",
-    label: "Tools",
-    icon: <ToolOutlined style={{ fontSize: 18 }} />,
-    children: [
-      { key: "18", page: "mcp-servers", label: "MCP Servers", icon: <ToolOutlined style={{ fontSize: 18 }} /> },
-      {
-        key: "21",
-        page: "vector-stores",
-        label: "Vector Stores",
-        icon: <DatabaseOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-    ],
-  },
-  {
-    key: "experimental",
-    page: "experimental",
-    label: "Experimental",
-    icon: <ExperimentOutlined style={{ fontSize: 18 }} />,
-    children: [
-      {
-        key: "9",
-        page: "caching",
-        label: "Caching",
-        icon: <DatabaseOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "25",
-        page: "prompts",
-        label: "Prompts",
-        icon: <FileTextOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "10",
-        page: "budgets",
-        label: "Budgets",
-        icon: <BankOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "20",
-        page: "transform-request",
-        label: "API Playground",
-        icon: <ApiOutlined style={{ fontSize: 18 }} />,
-        roles: [...all_admin_roles, ...internalUserRoles],
-      },
-      {
-        key: "19",
-        page: "tag-management",
-        label: "Tag Management",
-        icon: <TagsOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "27",
-        page: "claude-code-plugins",
-        label: "Claude Code Plugins",
-        icon: <ToolOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      { key: "4", page: "usage", label: "Old Usage", icon: <BarChartOutlined style={{ fontSize: 18 }} /> },
-    ],
-  },
-  {
-    key: "settings",
-    page: "settings",
-    label: "Settings",
-    icon: <SettingOutlined style={{ fontSize: 18 }} />,
-    roles: all_admin_roles,
-    children: [
-      {
-        key: "11",
-        page: "general-settings",
-        label: "Router Settings",
-        icon: <SettingOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "8",
-        page: "settings",
-        label: "Logging & Alerts",
-        icon: <SettingOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "13",
-        page: "admin-panel",
-        label: "Admin Settings",
-        icon: <SettingOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "14",
-        page: "ui-theme",
-        label: "UI Theme",
-        icon: <SettingOutlined style={{ fontSize: 18 }} />,
-        roles: all_admin_roles,
-      },
-    ],
-  },
-];
+// ----- Menu config factory function for i18n support -----
+function createMenuItems(t: (key: string) => string): MenuItemCfg[] {
+  return [
+    { key: "1", page: "api-keys", label: t("nav.items.virtualKeys"), icon: <KeyOutlined style={{ fontSize: 18 }} /> },
+    {
+      key: "3",
+      page: "llm-playground",
+      label: t("nav.items.playground"),
+      icon: <PlayCircleOutlined style={{ fontSize: 18 }} />,
+      roles: rolesWithWriteAccess,
+    },
+    {
+      key: "2",
+      page: "models",
+      label: t("nav.items.modelsEndpoints"),
+      icon: <BlockOutlined style={{ fontSize: 18 }} />,
+      roles: rolesWithWriteAccess,
+    },
+    {
+      key: "12",
+      page: "new_usage",
+      label: t("nav.items.usage"),
+      icon: <BarChartOutlined style={{ fontSize: 18 }} />,
+      roles: [...all_admin_roles, ...internalUserRoles],
+    },
+    { key: "6", page: "teams", label: t("nav.items.teams"), icon: <TeamOutlined style={{ fontSize: 18 }} /> },
+    {
+      key: "17",
+      page: "organizations",
+      label: t("nav.items.organizations"),
+      icon: <BankOutlined style={{ fontSize: 18 }} />,
+      roles: all_admin_roles,
+    },
+    {
+      key: "5",
+      page: "users",
+      label: t("nav.items.internalUsers"),
+      icon: <UserOutlined style={{ fontSize: 18 }} />,
+      roles: all_admin_roles,
+    },
+    { key: "14", page: "api_ref", label: t("nav.items.apiReference"), icon: <ApiOutlined style={{ fontSize: 18 }} /> },
+    {
+      key: "16",
+      page: "model-hub-table",
+      label: t("nav.items.aiHub"),
+      icon: <AppstoreOutlined style={{ fontSize: 18 }} />,
+    },
+    { key: "15", page: "logs", label: t("nav.items.logs"), icon: <LineChartOutlined style={{ fontSize: 18 }} /> },
+    {
+      key: "11",
+      page: "guardrails",
+      label: t("nav.items.guardrails"),
+      icon: <SafetyOutlined style={{ fontSize: 18 }} />,
+      roles: all_admin_roles,
+    },
+    {
+      key: "28",
+      page: "policies",
+      label: t("nav.items.policies"),
+      icon: <AuditOutlined style={{ fontSize: 18 }} />,
+      roles: all_admin_roles,
+    },
+    {
+      key: "26",
+      page: "tools",
+      label: t("nav.items.tools"),
+      icon: <ToolOutlined style={{ fontSize: 18 }} />,
+      children: [
+        { key: "18", page: "mcp-servers", label: t("nav.items.mcpServers"), icon: <ToolOutlined style={{ fontSize: 18 }} /> },
+        {
+          key: "21",
+          page: "vector-stores",
+          label: t("nav.items.vectorStores"),
+          icon: <DatabaseOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+      ],
+    },
+    {
+      key: "experimental",
+      page: "experimental",
+      label: t("nav.items.experimental"),
+      icon: <ExperimentOutlined style={{ fontSize: 18 }} />,
+      children: [
+        {
+          key: "9",
+          page: "caching",
+          label: t("nav.items.caching"),
+          icon: <DatabaseOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "25",
+          page: "prompts",
+          label: t("nav.items.prompts"),
+          icon: <FileTextOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "10",
+          page: "budgets",
+          label: t("budgets.title"),
+          icon: <BankOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "20",
+          page: "transform-request",
+          label: t("nav.items.apiPlayground"),
+          icon: <ApiOutlined style={{ fontSize: 18 }} />,
+          roles: [...all_admin_roles, ...internalUserRoles],
+        },
+        {
+          key: "19",
+          page: "tag-management",
+          label: t("nav.items.tagManagement"),
+          icon: <TagsOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "27",
+          page: "claude-code-plugins",
+          label: t("nav.items.claudeCodePlugins"),
+          icon: <ToolOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        { key: "4", page: "usage", label: t("nav.items.oldUsage"), icon: <BarChartOutlined style={{ fontSize: 18 }} /> },
+      ],
+    },
+    {
+      key: "settings",
+      page: "settings",
+      label: t("common.settings"),
+      icon: <SettingOutlined style={{ fontSize: 18 }} />,
+      roles: all_admin_roles,
+      children: [
+        {
+          key: "11",
+          page: "general-settings",
+          label: t("nav.items.routerSettings"),
+          icon: <SettingOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "8",
+          page: "settings",
+          label: t("nav.items.loggingAlerts"),
+          icon: <SettingOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "13",
+          page: "admin-panel",
+          label: t("nav.items.adminSettings"),
+          icon: <SettingOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+        {
+          key: "14",
+          page: "ui-theme",
+          label: t("nav.items.uiTheme"),
+          icon: <SettingOutlined style={{ fontSize: 18 }} />,
+          roles: all_admin_roles,
+        },
+      ],
+    },
+  ];
+}
 
 const Sidebar2: React.FC<SidebarProps> = ({ accessToken, userRole, defaultSelectedKey, collapsed = false }) => {
   const router = useRouter();
   const pathname = usePathname() || "/";
+  const { t } = useTranslation();
+
+  // Create translated menu items
+  const translatedMenuItems = React.useMemo(() => createMenuItems(t), [t]);
 
   // ----- Filter by role without mutating originals -----
   const filteredMenuItems = React.useMemo<MenuItemCfg[]>(() => {
-    return menuItems
+    return translatedMenuItems
       .filter((item) => !item.roles || item.roles.includes(userRole))
       .map((item) => ({
         ...item,
         children: item.children ? item.children.filter((c) => !c.roles || c.roles.includes(userRole)) : undefined,
       }));
-  }, [userRole]);
+  }, [userRole, translatedMenuItems]);
 
   // ----- Compute selected key from current path -----
   const selectedMenuKey = React.useMemo(() => {
