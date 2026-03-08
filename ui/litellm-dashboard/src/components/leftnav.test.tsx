@@ -90,7 +90,10 @@ describe("Sidebar (leftnav)", () => {
     ];
 
     topLevelLabels.forEach((label) => {
-      expect(screen.getByText(label)).toBeInTheDocument();
+      // Use getAllByText because some labels (e.g. "設定") appear as both
+      // a group header and a menu item label in the sidebar
+      const elements = screen.getAllByText(label);
+      expect(elements.length).toBeGreaterThanOrEqual(1);
     });
   });
 
