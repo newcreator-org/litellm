@@ -1,8 +1,7 @@
 # Docker Compose for local SaaS multi-tenant development
 #
-# Usage:
-#   cd saas-control-plane
-#   docker compose -f docker-compose.saas.yml up -d
+# Usage (from repo root):
+#   docker compose -f saas-control-plane/docker-compose.saas.yml up -d
 #
 # This starts:
 #   - PostgreSQL (shared, for control-plane DB + per-org schemas)
@@ -49,8 +48,8 @@ services:
 
   control-plane:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..  # repo root (needed for schema.prisma COPY)
+      dockerfile: saas-control-plane/Dockerfile
     environment:
       CP_DATABASE_URL: "postgresql+asyncpg://llmproxy:dbpassword9090@postgres:5432/litellm_control_plane"
       CP_SHARED_PG_HOST: postgres

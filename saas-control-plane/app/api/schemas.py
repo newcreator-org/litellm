@@ -44,6 +44,7 @@ class OrgResponse(BaseModel):
     status: str
     container_url: str | None
     litellm_port: int | None
+    master_key: str
     max_budget: float | None
     current_spend: float
     created_at: datetime

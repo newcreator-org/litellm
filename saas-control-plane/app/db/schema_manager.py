@@ -11,9 +11,11 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Path to the LiteLLM schema.prisma (relative to project root)
+# Path to the LiteLLM schema.prisma.
+# In Docker, set CP_PRISMA_SCHEMA_PATH=/control-plane/schema.prisma.
+# In local dev, defaults to repo root's schema.prisma.
 _LITELLM_ROOT = Path(__file__).resolve().parents[3]  # saas-control-plane -> litellm repo root
-PRISMA_SCHEMA_PATH = _LITELLM_ROOT / "schema.prisma"
+PRISMA_SCHEMA_PATH = Path(os.environ.get("CP_PRISMA_SCHEMA_PATH", str(_LITELLM_ROOT / "schema.prisma")))
 
 
 def _org_dsn(schema_name: str) -> str:
