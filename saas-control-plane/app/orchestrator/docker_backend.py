@@ -19,6 +19,15 @@ _LABEL = "litellm-saas-org"
 class DockerBackend(OrchestratorBackend):
     """Manage LiteLLM containers via the local Docker daemon."""
 
+    _port_lock: asyncio.Lock | None = None
+
+    @classmethod
+    def _get_port_lock(cls) -> asyncio.Lock:
+        """Lazily create the port allocation lock (must be called inside event loop)."""
+        if cls._port_lock is None:
+            cls._port_lock = asyncio.Lock()
+        return cls._port_lock
+
     # ---------- helpers ----------
 
     @staticmethod
@@ -40,34 +49,35 @@ class DockerBackend(OrchestratorBackend):
 
     async def _allocate_port(self) -> int:
         """Find the next free host port by checking existing containers."""
-        rc, out, _ = await self._run(
-            [
-                "docker",
-                "ps",
-                "-a",
-                "--filter",
-                f"label={_LABEL}",
-                "--format",
-                "{{.Ports}}",
-            ]
-        )
-        used_ports: set[int] = set()
-        if rc == 0 and out:
-            for line in out.splitlines():
-                # e.g. "0.0.0.0:4101->4000/tcp"
-                for part in line.split(","):
-                    part = part.strip()
-                    if "->" in part:
-                        host_part = part.split("->")[0]
-                        port_str = host_part.rsplit(":", 1)[-1]
-                        if port_str.isdigit():
-                            used_ports.add(int(port_str))
+        async with self._get_port_lock():
+            rc, out, _ = await self._run(
+                [
+                    "docker",
+                    "ps",
+                    "-a",
+                    "--filter",
+                    f"label={_LABEL}",
+                    "--format",
+                    "{{.Ports}}",
+                ]
+            )
+            used_ports: set[int] = set()
+            if rc == 0 and out:
+                for line in out.splitlines():
+                    # e.g. "0.0.0.0:4101->4000/tcp"
+                    for part in line.split(","):
+                        part = part.strip()
+                        if "->" in part:
+                            host_part = part.split("->")[0]
+                            port_str = host_part.rsplit(":", 1)[-1]
+                            if port_str.isdigit():
+                                used_ports.add(int(port_str))
 
-        port = DockerBackend._next_port
-        while port in used_ports:
-            port += 1
-        DockerBackend._next_port = port + 1
-        return port
+            port = DockerBackend._next_port
+            while port in used_ports:
+                port += 1
+            DockerBackend._next_port = port + 1
+            return port
 
     # ---------- interface ----------
 

@@ -1,7 +1,9 @@
 """Organisation management endpoints."""
 
+import asyncio
 import logging
 import secrets
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -13,7 +15,7 @@ from app.core.config import settings
 from app.core.security import require_cp_api_key
 from app.db.models import Organization, OrgStatus
 from app.db.schema_manager import _org_dsn, create_org_schema, drop_org_schema
-from app.db.session import get_session
+from app.db.session import async_session_factory, get_session
 from app.orchestrator.base import ContainerConfig
 from app.orchestrator.factory import get_orchestrator
 
@@ -46,6 +48,7 @@ async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get
     redis_prefix = f"org:{body.slug}"
     master_key = body.master_key or _generate_master_key()
 
+    now = datetime.now(timezone.utc)
     org = Organization(
         id=org_id,
         slug=body.slug,
@@ -55,46 +58,75 @@ async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get
         redis_prefix=redis_prefix,
         master_key=master_key,
         max_budget=body.max_budget,
+        created_at=now,
+        updated_at=now,
     )
     session.add(org)
     await session.commit()
-    await session.refresh(org)
 
-    # --- Async provisioning (could be a background task; kept inline for simplicity) ---
-    try:
-        # 1. Create PostgreSQL schema + tables
-        await create_org_schema(schema_name)
-
-        # 2. Start LiteLLM container
-        orchestrator = get_orchestrator()
-        container = await orchestrator.create_instance(
-            ContainerConfig(
-                org_id=org_id,
-                org_slug=body.slug,
-                image=settings.litellm_image,
-                database_url=_org_dsn(schema_name),
-                redis_host=settings.redis_host,
-                redis_port=settings.redis_port,
-                redis_password=settings.redis_password,
-                redis_prefix=redis_prefix,
-                master_key=master_key,
-                env_extra=body.env_extra,
-            )
+    # Fire-and-forget background provisioning so POST returns quickly.
+    asyncio.create_task(
+        _provision_org(
+            org_id=org_id,
+            slug=body.slug,
+            schema_name=schema_name,
+            redis_prefix=redis_prefix,
+            master_key=master_key,
+            env_extra=body.env_extra,
         )
+    )
 
-        org.container_id = container.container_id
-        org.container_url = container.url
-        org.litellm_port = container.port
-        org.status = OrgStatus.ACTIVE
-
-    except Exception as exc:
-        logger.exception("Failed to provision org %s", body.slug)
-        org.status = OrgStatus.ERROR
-        org.error_message = str(exc)
-
-    await session.commit()
-    await session.refresh(org)
     return org
+
+
+async def _provision_org(
+    *,
+    org_id: str,
+    slug: str,
+    schema_name: str,
+    redis_prefix: str,
+    master_key: str,
+    env_extra: dict[str, str] | None,
+) -> None:
+    """Background task: create DB schema + start LiteLLM container for an org."""
+    async with async_session_factory() as session:
+        org = await session.get(Organization, org_id)
+        if org is None:
+            logger.error("Org %s disappeared before provisioning finished", org_id)
+            return
+
+        try:
+            # 1. Create PostgreSQL schema + tables
+            await create_org_schema(schema_name)
+
+            # 2. Start LiteLLM container
+            orchestrator = get_orchestrator()
+            container = await orchestrator.create_instance(
+                ContainerConfig(
+                    org_id=org_id,
+                    org_slug=slug,
+                    image=settings.litellm_image,
+                    database_url=_org_dsn(schema_name),
+                    redis_host=settings.redis_host,
+                    redis_port=settings.redis_port,
+                    redis_password=settings.redis_password,
+                    redis_prefix=redis_prefix,
+                    master_key=master_key,
+                    env_extra=env_extra,
+                )
+            )
+
+            org.container_id = container.container_id
+            org.container_url = container.url
+            org.litellm_port = container.port
+            org.status = OrgStatus.ACTIVE
+
+        except Exception as exc:
+            logger.exception("Failed to provision org %s", slug)
+            org.status = OrgStatus.ERROR
+            org.error_message = str(exc)
+
+        await session.commit()
 
 
 # ---------- LIST ----------
@@ -150,11 +182,11 @@ async def update_org(
 
     if body.display_name is not None:
         org.display_name = body.display_name
-    if body.max_budget is not None:
+    if "max_budget" in body.model_fields_set:
         org.max_budget = body.max_budget
+    org.updated_at = datetime.now(timezone.utc)
 
     await session.commit()
-    await session.refresh(org)
     return org
 
 
@@ -206,8 +238,8 @@ async def stop_org(org_id: str, session: AsyncSession = Depends(get_session)) ->
     orchestrator = get_orchestrator()
     await orchestrator.stop_instance(org.container_id)
     org.status = OrgStatus.SUSPENDED
+    org.updated_at = datetime.now(timezone.utc)
     await session.commit()
-    await session.refresh(org)
     return org
 
 
@@ -225,8 +257,8 @@ async def start_org(org_id: str, session: AsyncSession = Depends(get_session)) -
     org.container_url = info.url
     org.litellm_port = info.port
     org.status = OrgStatus.ACTIVE
+    org.updated_at = datetime.now(timezone.utc)
     await session.commit()
-    await session.refresh(org)
     return org
 
 
