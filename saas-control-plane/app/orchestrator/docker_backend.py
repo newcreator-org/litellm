@@ -121,7 +121,7 @@ class DockerBackend(OrchestratorBackend):
             raise RuntimeError(f"docker run failed: {err}")
 
         container_id = out[:12]
-        url = f"http://localhost:{port}"
+        url = f"http://{name}:{settings.litellm_internal_port}"
 
         return ContainerInfo(
             container_id=container_id,
@@ -161,9 +161,14 @@ class DockerBackend(OrchestratorBackend):
                 port = int(bindings[0].get("HostPort", port))
                 break
 
+        # Resolve container name for Docker network URL
+        rc3, name_out, _ = await self._run(
+            ["docker", "inspect", "--format", "{{.Name}}", container_id]
+        )
+        cname = name_out.lstrip("/") if rc3 == 0 and name_out else container_id
         return ContainerInfo(
             container_id=container_id,
-            url=f"http://localhost:{port}",
+            url=f"http://{cname}:{settings.litellm_internal_port}",
             port=port,
             status="running",
         )
@@ -201,10 +206,11 @@ class DockerBackend(OrchestratorBackend):
                 if port_str.isdigit():
                     port = int(port_str)
 
+            cname = data.get("names", data["id"])
             results.append(
                 ContainerInfo(
                     container_id=data["id"],
-                    url=f"http://localhost:{port}" if port else "",
+                    url=f"http://{cname}:{settings.litellm_internal_port}" if cname else "",
                     port=port,
                     status=data.get("status", "unknown"),
                 )

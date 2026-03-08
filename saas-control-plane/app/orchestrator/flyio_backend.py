@@ -40,7 +40,7 @@ class FlyioBackend(OrchestratorBackend):
 
     # ---------- internal ----------
 
-    async def _api(self, method: str, path: str, json_body: dict[str, Any] | None = None) -> dict[str, Any]:
+    async def _api(self, method: str, path: str, json_body: dict[str, Any] | None = None) -> dict[str, Any] | list[Any]:
         async with httpx.AsyncClient(timeout=60) as client:
             resp = await client.request(method, f"{_FLY_API}{path}", headers=self._headers, json=json_body)
             if resp.status_code >= 400:

@@ -127,6 +127,9 @@ async def proxy_to_litellm(
     except httpx.ReadTimeout:
         await client.aclose()
         raise HTTPException(status_code=504, detail=f"Org '{org.slug}' instance timed out")
+    except Exception:
+        await client.aclose()
+        raise
 
     excluded_headers = {"content-encoding", "transfer-encoding", "content-length"}
     response_headers = {k: v for k, v in resp.headers.items() if k.lower() not in excluded_headers}
