@@ -536,7 +536,18 @@
       "editUserDetails": "Edit user details",
       "deleteUser": "Delete user",
       "resetPassword": "Reset Password",
-      "unlimited": "Unlimited"
+      "unlimited": "Unlimited",
+      "searchByEmail": "Search by email...",
+      "filterByUserId": "Filter by User ID",
+      "filterBySsoId": "Filter by SSO ID",
+      "selectRole": "Select Role",
+      "selectTeam": "Select Team",
+      "showingResults": "Showing {start} - {end} of {total} results",
+      "showingZeroResults": "Showing 0 results",
+      "previous": "Previous",
+      "next": "Next",
+      "noUsersFound": "No users found",
+      "loadingUsers": "Loading users..."
     },
     "roles": {
       "admin": "Admin",

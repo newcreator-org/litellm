@@ -536,7 +536,18 @@
       "editUserDetails": "ユーザーの詳細を編集",
       "deleteUser": "ユーザーを削除",
       "resetPassword": "パスワードリセット",
-      "unlimited": "無制限"
+      "unlimited": "無制限",
+      "searchByEmail": "メールアドレスで検索...",
+      "filterByUserId": "ユーザーIDでフィルター",
+      "filterBySsoId": "SSO IDでフィルター",
+      "selectRole": "ロールを選択",
+      "selectTeam": "チームを選択",
+      "showingResults": "{start} - {end} / {total}件の結果を表示中",
+      "showingZeroResults": "0件の結果を表示中",
+      "previous": "前へ",
+      "next": "次へ",
+      "noUsersFound": "ユーザーが見つかりません",
+      "loadingUsers": "ユーザーを読み込み中..."
     },
     "roles": {
       "admin": "管理者",
