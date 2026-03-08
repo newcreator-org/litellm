@@ -380,8 +380,8 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                                             <Text>
                                                               +{org.models.length - 3}{" "}
                                                               {org.models.length - 3 === 1
-                                                                ? t("organizations.table.moreModel").replace("{count} ", "")
-                                                                : t("organizations.table.moreModels").replace("{count} ", "")}
+                                                                ? t("organizations.table.moreModel").replace("{count}", "").trim()
+                                                                : t("organizations.table.moreModels").replace("{count}", "").trim()}
                                                             </Text>
                                                           </Badge>
                                                         )}
