@@ -1,5 +1,6 @@
 """JWT authentication utilities for the control-plane dashboard."""
 
+import hmac
 import secrets
 from datetime import datetime, timedelta, timezone
 
@@ -90,8 +91,6 @@ async def get_current_user(
 
     # Fall back to API key → synthetic admin user
     if api_key:
-        import hmac
-
         if hmac.compare_digest(api_key, settings.control_plane_api_key):
             return User(
                 id="__api_key__",

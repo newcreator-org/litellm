@@ -1,6 +1,7 @@
 """Dashboard routes — server-side rendered HTML pages."""
 
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 
 import jwt
@@ -11,10 +12,11 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.spend import _sync_org_spend
-from app.core.auth import create_access_token, decode_token, hash_password, verify_password
+from app.core.auth import create_access_token, decode_token, generate_user_id, hash_password, verify_password
 from app.core.config import settings
 from app.db.models import Organization, OrgStatus, SpendLog, User, UserRole
 from app.db.session import get_session
+from app.orchestrator.factory import get_orchestrator
 
 logger = logging.getLogger(__name__)
 
@@ -105,12 +107,8 @@ async def register_submit(
         ctx = {"request": request, "error": "Email already registered", "user": None}
         return templates.TemplateResponse("register.html", ctx)
 
-    from app.core.auth import generate_user_id
-
     user_count = (await session.execute(select(func.count(User.id)))).scalar_one()
     role = UserRole.ADMIN if user_count == 0 else UserRole.VIEWER
-
-    from datetime import datetime, timezone
 
     user = User(
         id=generate_user_id(),
@@ -259,10 +257,6 @@ async def dashboard_stop_org(
 
     org = await session.get(Organization, org_id)
     if org and org.container_id:
-        from datetime import datetime, timezone
-
-        from app.orchestrator.factory import get_orchestrator
-
         orchestrator = get_orchestrator()
         await orchestrator.stop_instance(org.container_id)
         org.status = OrgStatus.SUSPENDED
@@ -283,10 +277,6 @@ async def dashboard_start_org(
 
     org = await session.get(Organization, org_id)
     if org and org.container_id:
-        from datetime import datetime, timezone
-
-        from app.orchestrator.factory import get_orchestrator
-
         orchestrator = get_orchestrator()
         info = await orchestrator.start_instance(org.container_id)
         org.container_url = info.url
