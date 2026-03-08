@@ -477,7 +477,31 @@
       "title": "Delete Team",
       "confirmMessage": "Are you sure you want to delete this team?",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "warningKeysAssociated": "Warning: This team has {count} associated key(s).",
+      "deletingWillDeleteKeys": "Deleting the team will also delete all associated keys. This action is irreversible.",
+      "forceDeleteConfirm": "Are you sure you want to force delete this team and all its keys?",
+      "typeToConfirm": "Type {name} to confirm deletion:",
+      "enterTeamNameExactly": "Enter team name exactly",
+      "forceDelete": "Force Delete"
+    },
+    "table": {
+      "teamName": "Team Name",
+      "teamId": "Team ID",
+      "created": "Created",
+      "spendUsd": "Spend (USD)",
+      "budgetUsd": "Budget (USD)",
+      "models": "Models",
+      "organization": "Organization",
+      "yourRole": "Your Role",
+      "info": "Info",
+      "noLimit": "No limit",
+      "keys": "Keys",
+      "members": "Members"
+    },
+    "view": {
+      "createNewTeam": "+ Create New Team",
+      "clickTeamIdToView": "Click on \"Team ID\" to view team details and manage team members."
     }
   },
   "users": {
@@ -540,6 +564,32 @@
     "timestamp": "Timestamp",
     "noLogs": "No Logs",
     "viewDetails": "View Details"
+  },
+  "models": {
+    "title": "Model Management",
+    "addModelsForTeams": "Add models for teams you are an admin for.",
+    "addAndManageModels": "Add and manage models for the proxy",
+    "missingProvider": "Missing a provider?",
+    "missingProviderDesc": "The LiteLLM engineering team is constantly adding support for new LLM models, providers, endpoints. If you don't see the one you need, let us know and we'll prioritize it.",
+    "requestProvider": "Request Provider",
+    "allModels": "All Models",
+    "yourModels": "Your Models",
+    "addModel": "Add Model",
+    "llmCredentials": "LLM Credentials",
+    "passThroughEndpoints": "Pass-Through Endpoints",
+    "healthStatus": "Health Status",
+    "modelRetrySettings": "Model Retry Settings",
+    "modelGroupAlias": "Model Group Alias",
+    "priceDataReload": "Price Data Reload",
+    "lastRefreshed": "Last Refreshed",
+    "accessDenied": "Access Denied",
+    "askAdminForAccess": "Ask your proxy admin for access to view all models",
+    "globalRetrySettingsSaved": "Global retry settings saved successfully",
+    "retrySettingsSavedFor": "Retry settings saved successfully for {modelGroup}",
+    "failedToSaveRetrySettings": "Failed to save retry settings",
+    "fillRequiredFields": "Please fill in the following required fields: {fields}",
+    "fileUploadSuccess": "{fileName} file uploaded successfully",
+    "fileUploadFailed": "{fileName} file upload failed."
   },
   "settings": {
     "title": "Settings",

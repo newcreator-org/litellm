@@ -20,6 +20,7 @@ import type { UploadProps } from "antd";
 import { Form, Typography } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "@/i18n";
 import AddModelTab from "../../../components/add_model/add_model_tab";
 import HealthCheckComponent from "../../../components/model_dashboard/HealthCheckComponent";
 import ModelGroupAliasSettings from "../../../components/model_group_alias_settings";
@@ -48,6 +49,7 @@ interface GlobalRetryPolicyObject {
 
 const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, teams }) => {
   const { accessToken, token, userRole, userId: userID } = useAuthorized();
+  const { t } = useTranslation();
   const [addModelForm] = Form.useForm();
   const [lastRefreshed, setLastRefreshed] = useState("");
   const [providerModels, setProviderModels] = useState<Array<string>>([]);
@@ -151,9 +153,9 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
     },
     onChange(info) {
       if (info.file.status === "done") {
-        NotificationsManager.success(`${info.file.name} file uploaded successfully`);
+        NotificationsManager.success(t("models.fileUploadSuccess").replace("{fileName}", info.file.name));
       } else if (info.file.status === "error") {
-        NotificationsManager.fromBackend(`${info.file.name} file upload failed.`);
+        NotificationsManager.fromBackend(t("models.fileUploadFailed").replace("{fileName}", info.file.name));
       }
     },
   };
@@ -179,17 +181,17 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
         if (globalRetryPolicy) {
           payload.router_settings.retry_policy = globalRetryPolicy;
         }
-        NotificationsManager.success("Global retry settings saved successfully");
+        NotificationsManager.success(t("models.globalRetrySettingsSaved"));
       } else {
         if (modelGroupRetryPolicy) {
           payload.router_settings.model_group_retry_policy = modelGroupRetryPolicy;
         }
-        NotificationsManager.success(`Retry settings saved successfully for ${selectedModelGroup}`);
+        NotificationsManager.success(t("models.retrySettingsSavedFor").replace("{modelGroup}", selectedModelGroup || ""));
       }
 
       await setCallbacksCall(accessToken, payload);
     } catch (error) {
-      NotificationsManager.fromBackend("Failed to save retry settings");
+      NotificationsManager.fromBackend(t("models.failedToSaveRetrySettings"));
     }
   };
 
@@ -227,8 +229,8 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
     const { Title, Paragraph } = Typography;
     return (
       <div>
-        <Title level={1}>Access Denied</Title>
-        <Paragraph>Ask your proxy admin for access to view all models</Paragraph>
+        <Title level={1}>{t("models.accessDenied")}</Title>
+        <Paragraph>{t("models.askAdminForAccess")}</Paragraph>
       </div>
     );
   }
@@ -244,7 +246,7 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
             return `${field.name.join(".")}: ${field.errors.join(", ")}`;
           })
           .join(" | ") || "Unknown validation error";
-      NotificationsManager.fromBackend(`Please fill in the following required fields: ${errorMessages}`);
+      NotificationsManager.fromBackend(t("models.fillRequiredFields").replace("{fields}", errorMessages));
     }
   };
 
@@ -275,11 +277,11 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
           {/* Model Management Header */}
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h2 className="text-lg font-semibold">Model Management</h2>
+              <h2 className="text-lg font-semibold">{t("models.title")}</h2>
               {!all_admin_roles.includes(userRole) ? (
-                <p className="text-sm text-gray-600">Add models for teams you are an admin for.</p>
+                <p className="text-sm text-gray-600">{t("models.addModelsForTeams")}</p>
               ) : (
-                <p className="text-sm text-gray-600">Add and manage models for the proxy</p>
+                <p className="text-sm text-gray-600">{t("models.addAndManageModels")}</p>
               )}
             </div>
           </div>
@@ -290,10 +292,9 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
               <PlusCircleOutlined style={{ fontSize: "18px", color: "#6366f1" }} />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-gray-900 font-semibold text-sm m-0">Missing a provider?</h4>
+              <h4 className="text-gray-900 font-semibold text-sm m-0">{t("models.missingProvider")}</h4>
               <p className="text-gray-500 text-xs m-0 mt-0.5">
-                The LiteLLM engineering team is constantly adding support for new LLM models, providers, endpoints. If
-                you don&apos;t see the one you need, let us know and we&apos;ll prioritize it.
+                {t("models.missingProviderDesc")}
               </p>
             </div>
             <a
@@ -302,7 +303,7 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
               rel="noopener noreferrer"
               className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-[#6366f1] hover:bg-[#5558e3] text-white text-sm font-medium rounded-lg transition-colors"
             >
-              Request Provider
+              {t("models.requestProvider")}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
@@ -338,18 +339,18 @@ const ModelsAndEndpointsView: React.FC<ModelDashboardProps> = ({ premiumUser, te
             <TabGroup index={selectedTabIndex} onIndexChange={setSelectedTabIndex} className="gap-2 h-[75vh] w-full ">
               <TabList className="flex justify-between mt-2 w-full items-center">
                 <div className="flex">
-                  {all_admin_roles.includes(userRole) ? <Tab>All Models</Tab> : <Tab>Your Models</Tab>}
-                  {!shouldHideAddModelTab && <Tab>Add Model</Tab>}
-                  {all_admin_roles.includes(userRole) && <Tab>LLM Credentials</Tab>}
-                  {all_admin_roles.includes(userRole) && <Tab>Pass-Through Endpoints</Tab>}
-                  {all_admin_roles.includes(userRole) && <Tab>Health Status</Tab>}
-                  {all_admin_roles.includes(userRole) && <Tab>Model Retry Settings</Tab>}
-                  {all_admin_roles.includes(userRole) && <Tab>Model Group Alias</Tab>}
-                  {all_admin_roles.includes(userRole) && <Tab>Price Data Reload</Tab>}
+                  {all_admin_roles.includes(userRole) ? <Tab>{t("models.allModels")}</Tab> : <Tab>{t("models.yourModels")}</Tab>}
+                  {!shouldHideAddModelTab && <Tab>{t("models.addModel")}</Tab>}
+                  {all_admin_roles.includes(userRole) && <Tab>{t("models.llmCredentials")}</Tab>}
+                  {all_admin_roles.includes(userRole) && <Tab>{t("models.passThroughEndpoints")}</Tab>}
+                  {all_admin_roles.includes(userRole) && <Tab>{t("models.healthStatus")}</Tab>}
+                  {all_admin_roles.includes(userRole) && <Tab>{t("models.modelRetrySettings")}</Tab>}
+                  {all_admin_roles.includes(userRole) && <Tab>{t("models.modelGroupAlias")}</Tab>}
+                  {all_admin_roles.includes(userRole) && <Tab>{t("models.priceDataReload")}</Tab>}
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  {lastRefreshed && <Text>Last Refreshed: {lastRefreshed}</Text>}
+                  {lastRefreshed && <Text>{t("models.lastRefreshed")}: {lastRefreshed}</Text>}
                   <Icon
                     icon={RefreshIcon} // Modify as necessary for correct icon name
                     variant="shadow"

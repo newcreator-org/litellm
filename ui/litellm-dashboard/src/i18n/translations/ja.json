@@ -477,7 +477,31 @@
       "title": "チームを削除",
       "confirmMessage": "次のチームを削除してもよろしいですか？",
       "cancel": "キャンセル",
-      "delete": "削除"
+      "delete": "削除",
+      "warningKeysAssociated": "警告: このチームには{count}個の関連キーがあります。",
+      "deletingWillDeleteKeys": "チームを削除すると、関連する全てのキーも削除されます。この操作は取り消せません。",
+      "forceDeleteConfirm": "このチームと全てのキーを強制削除してもよろしいですか？",
+      "typeToConfirm": "削除を確認するには{name}と入力してください:",
+      "enterTeamNameExactly": "チーム名を正確に入力",
+      "forceDelete": "強制削除"
+    },
+    "table": {
+      "teamName": "チーム名",
+      "teamId": "チームID",
+      "created": "作成日",
+      "spendUsd": "支出 (USD)",
+      "budgetUsd": "予算 (USD)",
+      "models": "モデル",
+      "organization": "組織",
+      "yourRole": "あなたの役割",
+      "info": "情報",
+      "noLimit": "制限なし",
+      "keys": "キー",
+      "members": "メンバー"
+    },
+    "view": {
+      "createNewTeam": "+ 新しいチームを作成",
+      "clickTeamIdToView": "チームの詳細を表示し、チームメンバーを管理するには\u300cチームID\u300dをクリックしてください。"
     }
   },
   "users": {
@@ -540,6 +564,32 @@
     "timestamp": "タイムスタンプ",
     "noLogs": "ログがありません",
     "viewDetails": "詳細を表示"
+  },
+  "models": {
+    "title": "モデル管理",
+    "addModelsForTeams": "管理者であるチームのモデルを追加します。",
+    "addAndManageModels": "プロキシのモデルを追加・管理します",
+    "missingProvider": "プロバイダーが見つかりませんか？",
+    "missingProviderDesc": "LiteLLMエンジニアリングチームは常に新しいLLMモデル、プロバイダー、エンドポイントのサポートを追加しています。必要なものが見つからない場合はお知らせください。優先的に対応します。",
+    "requestProvider": "プロバイダーをリクエスト",
+    "allModels": "全モデル",
+    "yourModels": "あなたのモデル",
+    "addModel": "モデルを追加",
+    "llmCredentials": "LLM認証情報",
+    "passThroughEndpoints": "パススルーエンドポイント",
+    "healthStatus": "ヘルスステータス",
+    "modelRetrySettings": "モデルリトライ設定",
+    "modelGroupAlias": "モデルグループエイリアス",
+    "priceDataReload": "価格データリロード",
+    "lastRefreshed": "最終更新",
+    "accessDenied": "アクセス拒否",
+    "askAdminForAccess": "全モデルを表示するにはプロキシ管理者に問い合わせてください",
+    "globalRetrySettingsSaved": "グローバルリトライ設定が正常に保存されました",
+    "retrySettingsSavedFor": "リトライ設定が正常に保存されました: {modelGroup}",
+    "failedToSaveRetrySettings": "リトライ設定の保存に失敗しました",
+    "fillRequiredFields": "以下の必須フィールドを入力してください: {fields}",
+    "fileUploadSuccess": "{fileName}ファイルが正常にアップロードされました",
+    "fileUploadFailed": "{fileName}ファイルのアップロードに失敗しました"
   },
   "settings": {
     "title": "設定",

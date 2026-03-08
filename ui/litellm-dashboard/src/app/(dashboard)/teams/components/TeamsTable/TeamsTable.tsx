@@ -3,6 +3,7 @@ import { Tooltip } from "antd";
 import { formatNumberWithCommas } from "@/utils/dataUtils";
 import { PencilAltIcon, TrashIcon } from "@heroicons/react/outline";
 import React from "react";
+import { useTranslation } from "@/i18n";
 import { type KeyResponse, Team } from "@/components/key_team_helpers/key_list";
 import { Member, Organization } from "@/components/networking";
 import ModelsCell from "@/app/(dashboard)/teams/components/TeamsTable/ModelsCell";
@@ -38,19 +39,20 @@ const TeamsTable = ({
   setEditTeam,
   onDeleteTeam,
 }: TeamsTableProps) => {
+  const { t } = useTranslation();
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>Team Name</TableHeaderCell>
-          <TableHeaderCell>Team ID</TableHeaderCell>
-          <TableHeaderCell>Created</TableHeaderCell>
-          <TableHeaderCell>Spend (USD)</TableHeaderCell>
-          <TableHeaderCell>Budget (USD)</TableHeaderCell>
-          <TableHeaderCell>Models</TableHeaderCell>
-          <TableHeaderCell>Organization</TableHeaderCell>
-          <TableHeaderCell>Your Role</TableHeaderCell>
-          <TableHeaderCell>Info</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.teamName")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.teamId")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.created")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.spendUsd")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.budgetUsd")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.models")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.organization")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.yourRole")}</TableHeaderCell>
+          <TableHeaderCell>{t("teams.table.info")}</TableHeaderCell>
         </TableRow>
       </TableHead>
 
@@ -115,7 +117,7 @@ const TeamsTable = ({
                       overflow: "hidden",
                     }}
                   >
-                    {team["max_budget"] !== null && team["max_budget"] !== undefined ? team["max_budget"] : "No limit"}
+                    {team["max_budget"] !== null && team["max_budget"] !== undefined ? team["max_budget"] : t("teams.table.noLimit")}
                   </TableCell>
                   <ModelsCell team={team} />
                   <TableCell>{team.organization_id}</TableCell>
@@ -127,7 +129,7 @@ const TeamsTable = ({
                         perTeamInfo[team.team_id] &&
                         perTeamInfo[team.team_id].keys &&
                         perTeamInfo[team.team_id].keys.length}{" "}
-                      Keys
+                      {t("teams.table.keys")}
                     </Text>
                     <Text>
                       {perTeamInfo &&
@@ -136,7 +138,7 @@ const TeamsTable = ({
                         perTeamInfo[team.team_id].team_info &&
                         perTeamInfo[team.team_id].team_info.members_with_roles &&
                         perTeamInfo[team.team_id].team_info.members_with_roles.length}{" "}
-                      Members
+                      {t("teams.table.members")}
                     </Text>
                   </TableCell>
                   <TableCell>
