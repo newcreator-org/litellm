@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import jaTranslations from "./translations/ja.json";
 import enTranslations from "./translations/en.json";
 
@@ -52,7 +52,7 @@ interface I18nProviderProps {
 export function I18nProvider({ children, locale = DEFAULT_LOCALE }: I18nProviderProps) {
   const translations = translationMap[locale] || translationMap[DEFAULT_LOCALE];
 
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     const value = getNestedValue(translations, key);
     if (value === key) {
       // Fallback to English if key not found in current locale
@@ -60,10 +60,12 @@ export function I18nProvider({ children, locale = DEFAULT_LOCALE }: I18nProvider
       return fallback;
     }
     return value;
-  };
+  }, [translations]);
+
+  const contextValue = useMemo(() => ({ locale, t, translations }), [locale, t, translations]);
 
   return (
-    <I18nContext.Provider value={{ locale, t, translations }}>
+    <I18nContext.Provider value={contextValue}>
       {children}
     </I18nContext.Provider>
   );
