@@ -537,11 +537,11 @@ const Sidebar: React.FC<SidebarProps> = ({ setPage, defaultSelectedKey, collapse
         children: filteredItems.map((item) => ({
           key: item.key,
           icon: item.icon,
-          label: renderNavLink(item.label, item.page, item.external_url),
+          label: (<span data-onboarding={item.page}>{renderNavLink(item.label, item.page, item.external_url)}</span>),
           children: item.children?.map((child) => ({
             key: child.key,
             icon: child.icon,
-            label: renderNavLink(child.label, child.page, child.external_url),
+            label: (<span data-onboarding={child.page}>{renderNavLink(child.label, child.page, child.external_url)}</span>),
             onClick: () => {
               if (child.external_url) {
                 window.open(child.external_url, "_blank");
@@ -591,6 +591,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setPage, defaultSelectedKey, collapse
         collapsedWidth={80}
         collapsible
         trigger={null}
+        data-onboarding="sidebar"
         style={{
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           position: "relative",

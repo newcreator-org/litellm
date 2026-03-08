@@ -1194,5 +1194,58 @@
   "metadata": {
     "title": "LiteLLM Dashboard",
     "description": "LiteLLM Proxy Admin UI"
+  },
+  "onboarding": {
+    "helpButton": "Start guided tour",
+    "welcome": {
+      "title": "Welcome!",
+      "description": "Welcome to the LiteLLM Dashboard. Let us show you the key features."
+    },
+    "sidebar": {
+      "title": "Sidebar Navigation",
+      "description": "Access all features from the left sidebar. Click menu items to navigate between pages."
+    },
+    "virtualKeys": {
+      "title": "Virtual Keys",
+      "description": "Create and manage API keys. Set up access control and budget limits for your models."
+    },
+    "models": {
+      "title": "Models + Endpoints",
+      "description": "View available AI models, add new models, and manage LLM credentials."
+    },
+    "playground": {
+      "title": "Playground",
+      "description": "Test models with a ChatGPT-like interface. Chat, compare, and run compliance checks."
+    },
+    "usage": {
+      "title": "Usage",
+      "description": "View usage metrics including cost, model activity, and key activity."
+    },
+    "teams": {
+      "title": "Teams",
+      "description": "Create and manage teams, add members, and set team budgets."
+    },
+    "logs": {
+      "title": "Logs",
+      "description": "View request logs, audit logs, and exception logs. Use filters to search for specific entries."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Configure router settings, logging & alerts, admin settings, and UI theme."
+    },
+    "navbar": {
+      "title": "Navigation Bar",
+      "description": "Access chat, docs, and blog from the top bar. Use the user menu on the right for logout and preferences."
+    },
+    "complete": {
+      "title": "Tour Complete!",
+      "description": "That covers the basics. Click the ? button in the top right to restart this tour anytime."
+    },
+    "buttons": {
+      "next": "Next",
+      "prev": "Previous",
+      "done": "Done",
+      "progress": "{current} / {total}"
+    }
   }
 }

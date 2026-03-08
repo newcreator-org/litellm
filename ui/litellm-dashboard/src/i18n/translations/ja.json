@@ -1194,5 +1194,58 @@
   "metadata": {
     "title": "LiteLLM ダッシュボード",
     "description": "LiteLLM プロキシ管理UI"
+  },
+  "onboarding": {
+    "helpButton": "ガイドツアーを開始",
+    "welcome": {
+      "title": "ようこそ！",
+      "description": "LiteLLM ダッシュボードへようこそ。主要な機能をご紹介します。"
+    },
+    "sidebar": {
+      "title": "サイドバーナビゲーション",
+      "description": "左側のサイドバーから各機能にアクセスできます。メニュー項目をクリックしてページを切り替えましょう。"
+    },
+    "virtualKeys": {
+      "title": "仮想キー",
+      "description": "APIキーの作成・管理ができます。モデルへのアクセス制御や予算制限を設定できます。"
+    },
+    "models": {
+      "title": "モデル + エンドポイント",
+      "description": "利用可能なAIモデルの一覧表示、新しいモデルの追加、LLM認証情報の管理ができます。"
+    },
+    "playground": {
+      "title": "プレイグラウンド",
+      "description": "ChatGPTのようなインターフェースでモデルをテストできます。チャット、比較、コンプライアンスチェックが可能です。"
+    },
+    "usage": {
+      "title": "使用状況",
+      "description": "コスト、モデルアクティビティ、キーアクティビティなどの使用状況メトリクスを確認できます。"
+    },
+    "teams": {
+      "title": "チーム",
+      "description": "チームの作成・管理、メンバーの追加、チーム予算の設定ができます。"
+    },
+    "logs": {
+      "title": "ログ",
+      "description": "リクエストログ、監査ログ、例外ログを確認できます。フィルターで特定のログを検索できます。"
+    },
+    "settings": {
+      "title": "設定",
+      "description": "ルーター設定、ログ＆アラート、管理者設定、UIテーマなどを設定できます。"
+    },
+    "navbar": {
+      "title": "ナビゲーションバー",
+      "description": "上部のバーからチャット、ドキュメント、ブログにアクセスできます。右端のユーザーメニューからログアウトや設定変更が可能です。"
+    },
+    "complete": {
+      "title": "ツアー完了！",
+      "description": "基本的な機能の紹介は以上です。右上の ? ボタンからいつでもこのツアーを再開できます。"
+    },
+    "buttons": {
+      "next": "次へ",
+      "prev": "前へ",
+      "done": "完了",
+      "progress": "{current} / {total}"
+    }
   }
 }
