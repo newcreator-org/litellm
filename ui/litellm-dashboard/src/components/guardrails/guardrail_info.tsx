@@ -787,7 +787,7 @@ const GuardrailInfoView: React.FC<GuardrailInfoProps> = ({ guardrailId, onClose,
                     <div>
                       <Text className="font-medium">{t("guardrails.defaultOn")}</Text>
                       <Badge color={guardrailData.litellm_params?.default_on ? "green" : "gray"}>
-                        {guardrailData.litellm_params?.default_on ? t("adminPanel.yes") : "No"}
+                        {guardrailData.litellm_params?.default_on ? t("common.yes") : t("common.no")}
                       </Badge>
                     </div>
 

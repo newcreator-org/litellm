@@ -307,7 +307,6 @@ const AllModelsTab = ({
                         >
                           {t("models.allModelsTab.virtualKeysPage")}
                         </a>
-                        )
                       </span>
                     ) : (
                       <span>
@@ -318,7 +317,6 @@ const AllModelsTab = ({
                         >
                           {t("models.allModelsTab.virtualKeysPage")}
                         </a>
-                        )
                       </span>
                     )}
                   </div>

@@ -228,7 +228,7 @@ const GuardrailsPanel: React.FC<GuardrailsPanelProps> = ({ accessToken, userRole
                 { label: t("guardrails.mode"), value: guardrailToDelete?.litellm_params.mode },
                 {
                   label: t("guardrails.defaultOn"),
-                  value: guardrailToDelete?.litellm_params.default_on ? t("adminPanel.yes") : "No",
+                  value: guardrailToDelete?.litellm_params.default_on ? t("common.yes") : t("common.no"),
                 },
               ]}
               onCancel={handleDeleteCancel}
