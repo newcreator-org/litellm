@@ -1,0 +1,85 @@
+# Docker Compose for local SaaS multi-tenant development
+#
+# Usage (from repo root):
+#   docker compose -f saas-control-plane/docker-compose.saas.yml up -d
+#
+# This starts:
+#   - PostgreSQL (shared, for control-plane DB + per-org schemas)
+#   - Redis (shared, with prefix-per-org isolation)
+#   - Control Plane API (manages orgs, proxies LLM requests)
+#
+# Org LiteLLM containers are created dynamically via the control-plane API.
+# They join the "litellm-saas-net" network and are accessible to the gateway.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: llmproxy
+      POSTGRES_PASSWORD: dbpassword9090
+      POSTGRES_DB: litellm_control_plane
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Init script to also create the shared SaaS database
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U llmproxy"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - litellm-saas-net
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - litellm-saas-net
+
+  control-plane:
+    build:
+      context: ..  # repo root (needed for schema.prisma COPY)
+      dockerfile: saas-control-plane/Dockerfile
+    environment:
+      CP_DATABASE_URL: "postgresql+asyncpg://llmproxy:dbpassword9090@postgres:5432/litellm_control_plane"
+      CP_SHARED_PG_HOST: postgres
+      CP_SHARED_PG_PORT: "5432"
+      CP_SHARED_PG_USER: llmproxy
+      CP_SHARED_PG_PASSWORD: dbpassword9090
+      CP_SHARED_PG_DATABASE: litellm_saas
+      CP_REDIS_HOST: redis
+      CP_REDIS_PORT: "6379"
+      CP_ORCHESTRATOR_BACKEND: docker
+      CP_LITELLM_IMAGE: "ghcr.io/berriai/litellm:main-stable"
+      CP_CONTROL_PLANE_API_KEY: "sk-cp-dev-secret"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      # Mount docker socket so control-plane can manage containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - litellm-saas-net
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  litellm-saas-net:
+    name: litellm-saas-net
+    driver: bridge

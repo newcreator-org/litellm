@@ -1,0 +1,21 @@
+# Fly.io configuration for the control plane itself.
+# Org LiteLLM instances are managed via Machines API, not this file.
+#
+# Deploy: fly deploy --app litellm-control-plane
+
+app = "litellm-control-plane"
+primary_region = "nrt"  # Tokyo
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
