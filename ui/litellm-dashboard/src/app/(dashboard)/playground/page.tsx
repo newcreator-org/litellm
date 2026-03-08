@@ -10,6 +10,7 @@ import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
 import { fetchProxySettings } from "@/utils/proxyUtils";
 import { useUIConfig } from "@/app/(dashboard)/hooks/uiConfig/useUIConfig";
 import { MessageOutlined, CloseOutlined } from "@ant-design/icons";
+import { useTranslation } from "@/i18n";
 
 interface ProxySettings {
   PROXY_BASE_URL?: string;
@@ -17,6 +18,7 @@ interface ProxySettings {
 }
 
 export default function PlaygroundPage() {
+  const { t } = useTranslation();
   const { accessToken, userRole, userId, disabledPersonalKeyCreation, token } = useAuthorized();
   const [proxySettings, setProxySettings] = useState<ProxySettings | undefined>(undefined);
   const [chatBannerDismissed, setChatBannerDismissed] = useState(false);
@@ -66,11 +68,11 @@ export default function PlaygroundPage() {
             flexShrink: 0,
             lineHeight: "18px",
           }}>
-            New
+            {t("playground.newBadge")}
           </span>
           <span style={{ flex: 1, color: "#0c4a6e", fontSize: 13.5, lineHeight: 1.5 }}>
             <strong>Chat UI</strong>
-            {" "}— a ChatGPT-like interface for your users to chat with AI models and MCP tools. Share it with your team.
+            {" "}— {t("playground.chatUIBanner")}
           </span>
           <a
             href={chatHref}
@@ -91,7 +93,7 @@ export default function PlaygroundPage() {
               flexShrink: 0,
             }}
           >
-            Open Chat UI →
+            {t("playground.openChatUI")}
           </a>
           <button
             onClick={() => setChatBannerDismissed(true)}
@@ -104,10 +106,10 @@ export default function PlaygroundPage() {
       )}
     <TabGroup className="w-full" style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
       <TabList className="mb-0">
-        <Tab>Chat</Tab>
-        <Tab>Compare</Tab>
-        <Tab>Compliance</Tab>
-        <Tab>Agent Builder (Experimental)</Tab>
+        <Tab>{t("playground.chat")}</Tab>
+        <Tab>{t("playground.compare")}</Tab>
+        <Tab>{t("playground.compliance")}</Tab>
+        <Tab>{t("playground.agentBuilder")}</Tab>
       </TabList>
       <TabPanels className="h-full">
         <TabPanel className="h-full">
