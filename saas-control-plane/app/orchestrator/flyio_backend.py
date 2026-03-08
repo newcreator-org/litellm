@@ -83,7 +83,12 @@ class FlyioBackend(OrchestratorBackend):
         if config.redis_prefix:
             env_vars["REDIS_NAMESPACE"] = config.redis_prefix
         if config.env_extra:
-            env_vars.update(config.env_extra)
+            _PROTECTED_ENV_KEYS = {
+                "DATABASE_URL", "REDIS_HOST", "REDIS_PORT", "REDIS_PASSWORD",
+                "REDIS_NAMESPACE", "LITELLM_MASTER_KEY", "STORE_MODEL_IN_DB",
+            }
+            safe_extra = {k: v for k, v in config.env_extra.items() if k not in _PROTECTED_ENV_KEYS}
+            env_vars.update(safe_extra)
 
         machine_config: dict[str, Any] = {
             "name": f"litellm-{config.org_slug}",

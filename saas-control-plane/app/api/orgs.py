@@ -187,7 +187,7 @@ async def delete_org(org_id: str, session: AsyncSession = Depends(get_session)) 
         await session.commit()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {exc}")
 
-    org.status = OrgStatus.DELETED
+    await session.delete(org)
     await session.commit()
 
 

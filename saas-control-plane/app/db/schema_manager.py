@@ -18,8 +18,12 @@ PRISMA_SCHEMA_PATH = _LITELLM_ROOT / "schema.prisma"
 
 def _org_dsn(schema_name: str) -> str:
     """Build a PostgreSQL DSN for an org schema (for Prisma / LiteLLM)."""
+    from urllib.parse import quote_plus
+
+    user = quote_plus(settings.shared_pg_user)
+    password = quote_plus(settings.shared_pg_password)
     return (
-        f"postgresql://{settings.shared_pg_user}:{settings.shared_pg_password}"
+        f"postgresql://{user}:{password}"
         f"@{settings.shared_pg_host}:{settings.shared_pg_port}"
         f"/{settings.shared_pg_database}?schema={schema_name}"
     )
