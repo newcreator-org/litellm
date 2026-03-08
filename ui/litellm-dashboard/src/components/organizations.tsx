@@ -24,6 +24,7 @@ import {
 } from "@tremor/react";
 import { Form, Input, Modal, Select as Select2, Tooltip } from "antd";
 import React, { useState } from "react";
+import { useTranslation } from "@/i18n";
 import { formatNumberWithCommas } from "../utils/dataUtils";
 import DeleteResourceModal from "./common_components/DeleteResourceModal";
 import TableIconActionButton from "./common_components/IconActionButton/TableIconActionButtons/TableIconActionButton";
@@ -71,6 +72,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
   setOrganizations,
   premiumUser,
 }) => {
+  const { t } = useTranslation();
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
   const [editOrg, setEditOrg] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -138,7 +140,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
     try {
       setIsDeleting(true);
       await organizationDeleteCall(accessToken, orgToDelete);
-      NotificationsManager.success("Organization deleted successfully");
+      NotificationsManager.success(t("organizations.deletedSuccessfully"));
 
       setIsDeleteModalOpen(false);
       setOrgToDelete(null);
@@ -186,7 +188,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
       }
 
       await organizationCreateCall(accessToken, values);
-      NotificationsManager.success("Organization created successfully");
+      NotificationsManager.success(t("organizations.createdSuccessfully"));
       setIsOrgModalVisible(false);
       form.resetFields();
       // Refresh organizations list
@@ -205,9 +207,9 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
     return (
       <div>
         <Text>
-          This is a LiteLLM Enterprise feature, and requires a valid key to use. Get a trial key{" "}
+          {t("organizations.enterpriseFeature")} {t("organizations.getTrialKey")}{" "}
           <a href="https://www.litellm.ai/#pricing" target="_blank" rel="noopener noreferrer">
-            here
+            {t("organizations.here")}
           </a>
           .
         </Text>
@@ -221,7 +223,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
         <Col numColSpan={1} className="flex flex-col gap-2">
           {(userRole === "Admin" || userRole === "Org Admin") && (
             <Button className="w-fit" onClick={() => setIsOrgModalVisible(true)}>
-              + Create New Organization
+              {t("organizations.createOrg")}
             </Button>
           )}
           {selectedOrgId ? (
@@ -241,7 +243,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
             <TabGroup className="gap-2 h-[75vh] w-full">
               <TabList className="flex justify-between mt-2 w-full items-center">
                 <div className="flex">
-                  <Tab>Your Organizations</Tab>
+                  <Tab>{t("organizations.yourOrganizations")}</Tab>
                 </div>
                 <div className="flex items-center space-x-2">
                   {lastRefreshed && <Text>Last Refreshed: {lastRefreshed}</Text>}
@@ -256,7 +258,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <Text>Click on &ldquo;Organization ID&rdquo; to view organization details.</Text>
+                  <Text>{t("organizations.clickOrgIdToView")}</Text>
                   <Grid numItems={1} className="gap-2 pt-2 pb-2 h-[75vh] w-full mt-2">
                     <Col numColSpan={1}>
                       <Card className="w-full mx-auto flex-auto overflow-hidden overflow-y-auto max-h-[50vh]">
@@ -274,15 +276,15 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                         <Table>
                           <TableHead>
                             <TableRow>
-                              <TableHeaderCell>Organization ID</TableHeaderCell>
-                              <TableHeaderCell>Organization Name</TableHeaderCell>
-                              <TableHeaderCell>Created</TableHeaderCell>
-                              <TableHeaderCell>Spend (USD)</TableHeaderCell>
-                              <TableHeaderCell>Budget (USD)</TableHeaderCell>
-                              <TableHeaderCell>Models</TableHeaderCell>
-                              <TableHeaderCell>TPM / RPM Limits</TableHeaderCell>
-                              <TableHeaderCell>Info</TableHeaderCell>
-                              <TableHeaderCell>Actions</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.orgId")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.orgName")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.created")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.spendUsd")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.budgetUsd")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.models")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.tpmRpmLimits")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.info")}</TableHeaderCell>
+                              <TableHeaderCell>{t("organizations.table.actions")}</TableHeaderCell>
                             </TableRow>
                           </TableHead>
 
@@ -316,7 +318,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                         {org.litellm_budget_table?.max_budget !== null &&
                                         org.litellm_budget_table?.max_budget !== undefined
                                           ? org.litellm_budget_table?.max_budget
-                                          : "No limit"}
+                                          : t("organizations.table.noLimit")}
                                       </TableCell>
                                       <TableCell
                                         style={{
@@ -331,7 +333,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                             <div className="flex flex-col">
                                               {org.models.length === 0 ? (
                                                 <Badge size={"xs"} className="mb-1" color="red">
-                                                  <Text>All Proxy Models</Text>
+                                                  <Text>{t("organizations.table.allProxyModels")}</Text>
                                                 </Badge>
                                               ) : (
                                                 <>
@@ -378,8 +380,8 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                                             <Text>
                                                               +{org.models.length - 3}{" "}
                                                               {org.models.length - 3 === 1
-                                                                ? "more model"
-                                                                : "more models"}
+                                                                ? t("organizations.table.moreModel").replace("{count}", "")
+                                                                : t("organizations.table.moreModels").replace("{count}", "")}
                                                             </Text>
                                                           </Badge>
                                                         )}
@@ -388,7 +390,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                                           {org.models.slice(3).map((model, index) =>
                                                             model === "all-proxy-models" ? (
                                                               <Badge key={index + 3} size={"xs"} color="red">
-                                                                <Text>All Proxy Models</Text>
+                                                                <Text>{t("organizations.table.allProxyModels")}</Text>
                                                               </Badge>
                                                             ) : (
                                                               <Badge key={index + 3} size={"xs"} color="blue">
@@ -412,26 +414,26 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                       </TableCell>
                                       <TableCell>
                                         <Text>
-                                          TPM:{" "}
+                                          {t("organizations.table.tpm")}:{" "}
                                           {org.litellm_budget_table?.tpm_limit
                                             ? org.litellm_budget_table?.tpm_limit
-                                            : "Unlimited"}
+                                            : t("organizations.table.unlimited")}
                                           <br />
-                                          RPM:{" "}
+                                          {t("organizations.table.rpm")}:{" "}
                                           {org.litellm_budget_table?.rpm_limit
                                             ? org.litellm_budget_table?.rpm_limit
-                                            : "Unlimited"}
+                                            : t("organizations.table.unlimited")}
                                         </Text>
                                       </TableCell>
                                       <TableCell>
-                                        <Text>{org.members?.length || 0} Members</Text>
+                                        <Text>{t("organizations.table.members").replace("{count}", String(org.members?.length || 0))}</Text>
                                       </TableCell>
                                       <TableCell>
                                         {userRole === "Admin" && (
                                           <>
                                             <TableIconActionButton
                                               variant="Edit"
-                                              tooltipText="Edit organization"
+                                              tooltipText={t("organizations.table.editOrganization")}
                                               onClick={() => {
                                                 setSelectedOrgId(org.organization_id);
                                                 setEditOrg(true);
@@ -439,7 +441,7 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                                             />
                                             <TableIconActionButton
                                               variant="Delete"
-                                              tooltipText="Delete organization"
+                                              tooltipText={t("organizations.table.deleteOrganization")}
                                               onClick={() => handleDelete(org.organization_id)}
                                             />
                                           </>
@@ -459,21 +461,21 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
           )}
         </Col>
       </Grid>
-      <Modal title="Create Organization" visible={isOrgModalVisible} width={800} footer={null} onCancel={handleCancel}>
+      <Modal title={t("organizations.form.createOrganization")} visible={isOrgModalVisible} width={800} footer={null} onCancel={handleCancel}>
         <Form form={form} onFinish={handleCreate} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} labelAlign="left">
           <Form.Item
-            label="Organization Name"
+            label={t("organizations.form.organizationName")}
             name="organization_alias"
             rules={[
               {
                 required: true,
-                message: "Please input an organization name",
+                message: t("organizations.form.pleaseInputOrgName"),
               },
             ]}
           >
             <TextInput placeholder="" />
           </Form.Item>
-          <Form.Item label="Models" name="models">
+          <Form.Item label={t("organizations.form.models")} name="models">
             <ModelSelect
               options={{ showAllProxyModelsOverride: true, includeSpecialOptions: true }}
               value={form.getFieldValue("models")}
@@ -482,81 +484,81 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
             />
           </Form.Item>
 
-          <Form.Item label="Max Budget (USD)" name="max_budget">
+          <Form.Item label={t("organizations.form.maxBudgetUsd")} name="max_budget">
             <NumericalInput step={0.01} precision={2} width={200} />
           </Form.Item>
-          <Form.Item label="Reset Budget" name="budget_duration">
-            <Select2 defaultValue={null} placeholder="n/a">
-              <Select2.Option value="24h">daily</Select2.Option>
-              <Select2.Option value="7d">weekly</Select2.Option>
-              <Select2.Option value="30d">monthly</Select2.Option>
+          <Form.Item label={t("organizations.form.resetBudget")} name="budget_duration">
+            <Select2 defaultValue={null} placeholder={t("organizations.form.na")}>
+              <Select2.Option value="24h">{t("organizations.form.daily")}</Select2.Option>
+              <Select2.Option value="7d">{t("organizations.form.weekly")}</Select2.Option>
+              <Select2.Option value="30d">{t("organizations.form.monthly")}</Select2.Option>
             </Select2>
           </Form.Item>
-          <Form.Item label="Tokens per minute Limit (TPM)" name="tpm_limit">
+          <Form.Item label={t("organizations.form.tpmLimit")} name="tpm_limit">
             <NumericalInput step={1} width={400} />
           </Form.Item>
-          <Form.Item label="Requests per minute Limit (RPM)" name="rpm_limit">
+          <Form.Item label={t("organizations.form.rpmLimit")} name="rpm_limit">
             <NumericalInput step={1} width={400} />
           </Form.Item>
 
           <Form.Item
             label={
               <span>
-                Allowed Vector Stores{" "}
-                <Tooltip title="Select which vector stores this organization can access by default. Leave empty for access to all vector stores">
+                {t("organizations.form.allowedVectorStores")}{" "}
+                <Tooltip title={t("organizations.form.vectorStoresTooltip")}>
                   <InfoCircleOutlined style={{ marginLeft: "4px" }} />
                 </Tooltip>
               </span>
             }
             name="allowed_vector_store_ids"
             className="mt-4"
-            help="Select vector stores this organization can access. Leave empty for access to all vector stores"
+            help={t("organizations.form.selectVectorStoresHelp")}
           >
             <VectorStoreSelector
               onChange={(values) => form.setFieldValue("allowed_vector_store_ids", values)}
               value={form.getFieldValue("allowed_vector_store_ids")}
               accessToken={accessToken || ""}
-              placeholder="Select vector stores (optional)"
+              placeholder={t("organizations.form.selectVectorStores")}
             />
           </Form.Item>
 
           <Form.Item
             label={
               <span>
-                Allowed MCP Servers{" "}
-                <Tooltip title="Select which MCP servers and access groups this organization can access by default.">
+                {t("organizations.form.allowedMcpServers")}{" "}
+                <Tooltip title={t("organizations.form.mcpServersTooltip")}>
                   <InfoCircleOutlined style={{ marginLeft: "4px" }} />
                 </Tooltip>
               </span>
             }
             name="allowed_mcp_servers_and_groups"
             className="mt-4"
-            help="Select MCP servers and access groups this organization can access."
+            help={t("organizations.form.selectMcpServersHelp")}
           >
             <MCPServerSelector
               onChange={(values) => form.setFieldValue("allowed_mcp_servers_and_groups", values)}
               value={form.getFieldValue("allowed_mcp_servers_and_groups")}
               accessToken={accessToken || ""}
-              placeholder="Select MCP servers and access groups (optional)"
+              placeholder={t("organizations.form.selectMcpServers")}
             />
           </Form.Item>
 
-          <Form.Item label="Metadata" name="metadata">
+          <Form.Item label={t("organizations.form.metadata")} name="metadata">
             <Input.TextArea rows={4} />
           </Form.Item>
 
           <div style={{ textAlign: "right", marginTop: "10px" }}>
-            <Button type="submit">Create Organization</Button>
+            <Button type="submit">{t("organizations.form.createOrganization")}</Button>
           </div>
         </Form>
       </Modal>
 
       <DeleteResourceModal
         isOpen={isDeleteModalOpen}
-        title="Delete Organization?"
-        message="Are you sure you want to delete this organization? This action cannot be undone."
-        resourceInformationTitle="Organization Information"
-        resourceInformation={[{ label: "Organization ID", value: orgToDelete, code: true }]}
+        title={t("organizations.deleteOrgTitle")}
+        message={t("organizations.deleteOrgMessage")}
+        resourceInformationTitle={t("organizations.orgInformation")}
+        resourceInformation={[{ label: t("organizations.table.orgId"), value: orgToDelete, code: true }]}
         onCancel={cancelDelete}
         onOk={confirmDelete}
         confirmLoading={isDeleting}

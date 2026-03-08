@@ -14,6 +14,7 @@ import debounce from "lodash/debounce";
 import { useEffect, useMemo, useState } from "react";
 import { useModelsInfo } from "../../hooks/models/useModels";
 import { transformModelData } from "../utils/modelDataTransformer";
+import { useTranslation } from "@/i18n";
 type ModelViewMode = "all" | "current_team";
 const { Text } = Typography;
 
@@ -34,6 +35,7 @@ const AllModelsTab = ({
   setSelectedModelId,
   setSelectedTeamId,
 }: AllModelsTabProps) => {
+  const { t } = useTranslation();
   const { data: modelCostMapData, isLoading: isLoadingModelCostMap } = useModelCostMap();
   const { userId, userRole, premiumUser } = useAuthorized();
   const { data: teams, isLoading: isLoadingTeams } = useTeams();
@@ -199,7 +201,7 @@ const AllModelsTab = ({
             <div className="border-b px-6 py-4 bg-gray-50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Text className="text-lg font-semibold text-gray-900">Current Team:</Text>
+                  <Text className="text-lg font-semibold text-gray-900">{t("models.allModelsTab.currentTeam")}</Text>
                   <div className="w-80">
                     {isLoading ? (
                       <Skeleton.Input active block size="large" />
@@ -232,7 +234,7 @@ const AllModelsTab = ({
                             label: (
                               <Space direction="horizontal" align="center">
                                 <Badge color="blue" size="small" />
-                                <Text style={{ fontSize: 16 }}>Personal</Text>
+                                <Text style={{ fontSize: 16 }}>{t("models.allModelsTab.personal")}</Text>
                               </Space>
                             ),
                           },
@@ -255,7 +257,7 @@ const AllModelsTab = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <Text className="text-lg font-semibold text-gray-900">View:</Text>
+                  <Text className="text-lg font-semibold text-gray-900">{t("models.allModelsTab.view")}</Text>
                   <div className="w-64">
                     {isLoading ? (
                       <Skeleton.Input active block size="large" />
@@ -272,7 +274,7 @@ const AllModelsTab = ({
                             label: (
                               <Space direction="horizontal" align="center">
                                 <Badge color="purple" size="small" />
-                                <Text style={{ fontSize: 16 }}>Current Team Models</Text>
+                                <Text style={{ fontSize: 16 }}>{t("models.allModelsTab.currentTeamModels")}</Text>
                               </Space>
                             ),
                           },
@@ -281,7 +283,7 @@ const AllModelsTab = ({
                             label: (
                               <Space direction="horizontal" align="center">
                                 <Badge color="gray" size="small" />
-                                <Text style={{ fontSize: 16 }}>All Available Models</Text>
+                                <Text style={{ fontSize: 16 }}>{t("models.allModelsTab.allAvailableModels")}</Text>
                               </Space>
                             ),
                           },
@@ -298,25 +300,25 @@ const AllModelsTab = ({
                   <div className="text-xs text-gray-500">
                     {currentTeam === "personal" ? (
                       <span>
-                        To access these models: Create a Virtual Key without selecting a team on the{" "}
+                        {t("models.allModelsTab.accessModelsPersonal")}
                         <a
                           href="/public?login=success&page=api-keys"
                           className="text-gray-600 hover:text-gray-800 underline"
                         >
-                          Virtual Keys page
+                          {t("models.allModelsTab.virtualKeysPage")}
                         </a>
+                        )
                       </span>
                     ) : (
                       <span>
-                        To access these models: Create a Virtual Key and select Team as &quot;
-                        {typeof currentTeam !== "string" ? currentTeam.team_alias || currentTeam.team_id : ""}&quot; on
-                        the{" "}
+                        {t("models.allModelsTab.accessModelsTeam").replace("{teamName}", typeof currentTeam !== "string" ? currentTeam.team_alias || currentTeam.team_id : "")}
                         <a
                           href="/public?login=success&page=api-keys"
                           className="text-gray-600 hover:text-gray-800 underline"
                         >
-                          Virtual Keys page
+                          {t("models.allModelsTab.virtualKeysPage")}
                         </a>
+                        )
                       </span>
                     )}
                   </div>
@@ -334,7 +336,7 @@ const AllModelsTab = ({
                     <div className="relative w-64">
                       <input
                         type="text"
-                        placeholder="Search model names..."
+                        placeholder={t("models.allModelsTab.searchModelNames")}
                         className="w-full px-3 py-2 pl-8 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         value={modelNameSearch}
                         onChange={(e) => setModelNameSearch(e.target.value)}
@@ -367,7 +369,7 @@ const AllModelsTab = ({
                           d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
                         />
                       </svg>
-                      Filters
+                      {t("models.allModelsTab.filters")}
                     </button>
 
                     {/* Reset Filters Button */}
@@ -383,7 +385,7 @@ const AllModelsTab = ({
                           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                         />
                       </svg>
-                      Reset Filters
+                      {t("models.allModelsTab.resetFilters")}
                     </button>
                   </div>
 
@@ -391,7 +393,7 @@ const AllModelsTab = ({
                   <Button
                     icon={<SettingOutlined />}
                     onClick={() => setIsModelSettingsModalVisible(true)}
-                    title="Model Settings"
+                    title={t("models.allModelsTab.modelSettings")}
                   />
                 </div>
 
@@ -404,11 +406,11 @@ const AllModelsTab = ({
                         className="w-full"
                         value={selectedModelGroup ?? "all"}
                         onChange={(value) => setSelectedModelGroup(value === "all" ? "all" : value)}
-                        placeholder="Filter by Public Model Name"
+                        placeholder={t("models.allModelsTab.filterByPublicModelName")}
                         showSearch
                         options={[
-                          { value: "all", label: "All Models" },
-                          { value: "wildcard", label: "Wildcard Models (*)" },
+                          { value: "all", label: t("models.allModelsTab.allModelsFilter") },
+                          { value: "wildcard", label: t("models.allModelsTab.wildcardModels") },
                           ...availableModelGroups.map((group, idx) => ({
                             value: group,
                             label: group,
@@ -423,10 +425,10 @@ const AllModelsTab = ({
                         className="w-full"
                         value={selectedModelAccessGroupFilter ?? "all"}
                         onChange={(value) => setSelectedModelAccessGroupFilter(value === "all" ? null : value)}
-                        placeholder="Filter by Model Access Group"
+                        placeholder={t("models.allModelsTab.filterByModelAccessGroup")}
                         showSearch
                         options={[
-                          { value: "all", label: "All Model Access Groups" },
+                          { value: "all", label: t("models.allModelsTab.allModelAccessGroups") },
                           ...availableModelAccessGroups.map((accessGroup, idx) => ({
                             value: accessGroup,
                             label: accessGroup,
@@ -444,8 +446,8 @@ const AllModelsTab = ({
                   ) : (
                     <span className="text-sm text-gray-700">
                       {paginationMeta.total_count > 0
-                        ? `Showing ${((currentPage - 1) * pageSize) + 1} - ${Math.min(currentPage * pageSize, paginationMeta.total_count)} of ${paginationMeta.total_count} results`
-                        : "Showing 0 results"}
+                        ? t("models.allModelsTab.showingResults").replace("{start}", String(((currentPage - 1) * pageSize) + 1)).replace("{end}", String(Math.min(currentPage * pageSize, paginationMeta.total_count))).replace("{total}", String(paginationMeta.total_count))
+                        : t("models.allModelsTab.showingZeroResults")}
                     </span>
                   )}
 
@@ -465,7 +467,7 @@ const AllModelsTab = ({
                           : "hover:bg-gray-50"
                           }`}
                       >
-                        Previous
+                        {t("models.allModelsTab.previous")}
                       </button>
                     )}
 
@@ -484,7 +486,7 @@ const AllModelsTab = ({
                           : "hover:bg-gray-50"
                           }`}
                       >
-                        Next
+                        {t("models.allModelsTab.next")}
                       </button>
                     )}
                   </div>

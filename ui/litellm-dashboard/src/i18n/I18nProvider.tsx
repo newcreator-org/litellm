@@ -88,4 +88,19 @@ export function useTranslation() {
   return context;
 }
 
+/**
+ * Standalone translation function for use outside React components.
+ * Uses the default locale (ja) translations directly.
+ */
+export function getTranslation(key: string): string {
+  const translations = translationMap[DEFAULT_LOCALE];
+  const value = getNestedValue(translations, key);
+  if (value === key) {
+    // Fallback to English if key not found in current locale
+    const fallback = getNestedValue(translationMap.en, key);
+    return fallback;
+  }
+  return value;
+}
+
 export { DEFAULT_LOCALE };
