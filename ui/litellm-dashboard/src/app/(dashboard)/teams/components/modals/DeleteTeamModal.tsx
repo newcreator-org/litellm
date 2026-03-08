@@ -14,7 +14,7 @@ const DeleteTeamModal = ({ teams, teamToDelete, onCancel, onConfirm }: DeleteTea
   const { t } = useTranslation();
   const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
 
-  const team = teams?.find((t) => t.team_id === teamToDelete);
+  const team = teams?.find((tm) => tm.team_id === teamToDelete);
   const teamName = team?.team_alias || "";
   const keyCount = team?.keys?.length || 0;
   const isValid = deleteConfirmInput === teamName;
