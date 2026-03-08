@@ -1225,7 +1225,7 @@
       "next": "Next",
       "prev": "Previous",
       "done": "Done",
-      "progress": "{current} / {total}"
+      "progress": "{{current}} / {{total}}"
     }
   }
 }
