@@ -10,6 +10,7 @@ import logging
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -106,26 +107,40 @@ async def proxy_to_litellm(
 
     body = await request.body()
 
+    # Use a persistent client for the streaming context
+    client = httpx.AsyncClient(timeout=httpx.Timeout(120.0, connect=10.0))
+
     try:
-        async with httpx.AsyncClient(timeout=120) as client:
-            resp = await client.request(
+        resp = await client.send(
+            client.build_request(
                 method=request.method,
                 url=upstream,
                 headers=fwd_headers,
                 content=body,
-            )
+            ),
+            stream=True,
+        )
     except httpx.ConnectError:
+        await client.aclose()
         msg = f"Cannot connect to org '{org.slug}' instance at {org.container_url}"
         raise HTTPException(status_code=502, detail=msg)
     except httpx.ReadTimeout:
+        await client.aclose()
         raise HTTPException(status_code=504, detail=f"Org '{org.slug}' instance timed out")
 
-    # Return upstream response as-is
     excluded_headers = {"content-encoding", "transfer-encoding", "content-length"}
     response_headers = {k: v for k, v in resp.headers.items() if k.lower() not in excluded_headers}
 
-    return Response(
-        content=resp.content,
+    async def stream_response():
+        try:
+            async for chunk in resp.aiter_bytes():
+                yield chunk
+        finally:
+            await resp.aclose()
+            await client.aclose()
+
+    return StreamingResponse(
+        content=stream_response(),
         status_code=resp.status_code,
         headers=response_headers,
         media_type=resp.headers.get("content-type"),

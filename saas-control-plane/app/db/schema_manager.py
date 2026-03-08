@@ -110,7 +110,8 @@ async def ensure_shared_database_exists() -> None:
         )
         if not exists:
             # CREATE DATABASE cannot run inside a transaction block.
-            await conn.execute(f'CREATE DATABASE "{settings.shared_pg_database}"')
+            safe_name = settings.shared_pg_database.replace('"', '""')
+            await conn.execute(f'CREATE DATABASE "{safe_name}"')
             logger.info("Created shared database: %s", settings.shared_pg_database)
         else:
             logger.info("Shared database already exists: %s", settings.shared_pg_database)
