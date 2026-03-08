@@ -11,16 +11,18 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.schemas import OrgCreateRequest, OrgListResponse, OrgResponse, OrgUpdateRequest
+from app.core.auth import get_current_user, require_admin
 from app.core.config import settings
-from app.core.security import require_cp_api_key
-from app.db.models import Organization, OrgStatus
+from app.db.models import Organization, OrgStatus, User
 from app.db.schema_manager import _org_dsn, create_org_schema, drop_org_schema
 from app.db.session import async_session_factory, get_session
 from app.orchestrator.base import ContainerConfig
 from app.orchestrator.factory import get_orchestrator
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/orgs", tags=["organisations"], dependencies=[Depends(require_cp_api_key)])
+
+# Read endpoints require any authenticated user; write endpoints require admin.
+router = APIRouter(prefix="/orgs", tags=["organisations"])
 
 # Strong references to background tasks so they aren't garbage-collected mid-execution.
 # See https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
@@ -39,7 +41,11 @@ def _generate_master_key() -> str:
 
 
 @router.post("", response_model=OrgResponse, status_code=status.HTTP_201_CREATED)
-async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get_session)) -> Organization:
+async def create_org(
+    body: OrgCreateRequest,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Provision a new organisation: DB schema + LiteLLM container."""
 
     # Check slug uniqueness
@@ -143,6 +149,7 @@ async def list_orgs(
     status_filter: Optional[str] = Query(None, alias="status"),
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
+    _user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> dict:
     """List organisations with optional status filter."""
@@ -164,7 +171,11 @@ async def list_orgs(
 
 
 @router.get("/{org_id}", response_model=OrgResponse)
-async def get_org(org_id: str, session: AsyncSession = Depends(get_session)) -> Organization:
+async def get_org(
+    org_id: str,
+    _user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Get organisation details."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -179,6 +190,7 @@ async def get_org(org_id: str, session: AsyncSession = Depends(get_session)) -> 
 async def update_org(
     org_id: str,
     body: OrgUpdateRequest,
+    _admin: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ) -> Organization:
     """Update organisation metadata."""
@@ -200,7 +212,11 @@ async def update_org(
 
 
 @router.delete("/{org_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_org(org_id: str, session: AsyncSession = Depends(get_session)) -> None:
+async def delete_org(
+    org_id: str,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> None:
     """Destroy org infrastructure and delete the record."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -233,7 +249,11 @@ async def delete_org(org_id: str, session: AsyncSession = Depends(get_session)) 
 
 
 @router.post("/{org_id}/stop", response_model=OrgResponse)
-async def stop_org(org_id: str, session: AsyncSession = Depends(get_session)) -> Organization:
+async def stop_org(
+    org_id: str,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Stop (scale-to-zero) an org's LiteLLM instance."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -250,7 +270,11 @@ async def stop_org(org_id: str, session: AsyncSession = Depends(get_session)) ->
 
 
 @router.post("/{org_id}/start", response_model=OrgResponse)
-async def start_org(org_id: str, session: AsyncSession = Depends(get_session)) -> Organization:
+async def start_org(
+    org_id: str,
+    _admin: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+) -> Organization:
     """Wake a suspended org's LiteLLM instance."""
     org = await session.get(Organization, org_id)
     if org is None:
@@ -269,7 +293,11 @@ async def start_org(org_id: str, session: AsyncSession = Depends(get_session)) -
 
 
 @router.get("/{org_id}/status")
-async def org_instance_status(org_id: str, session: AsyncSession = Depends(get_session)) -> dict:
+async def org_instance_status(
+    org_id: str,
+    _user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
     """Check the container status of an org's LiteLLM instance."""
     org = await session.get(Organization, org_id)
     if org is None:

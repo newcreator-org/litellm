@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Login — LiteLLM SaaS{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-16">
+    <div class="bg-white shadow rounded-lg p-8">
+        <h1 class="text-2xl font-bold text-center mb-6">LiteLLM SaaS</h1>
+        <p class="text-sm text-gray-500 text-center mb-6">Control Plane Dashboard</p>
+
+        {% if error %}
+        <div class="mb-4 p-3 rounded-md bg-red-50 text-red-700 text-sm">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/dashboard/login">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
+                <input type="email" id="email" name="email" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password</label>
+                <input type="password" id="password" name="password" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium">
+                Sign In
+            </button>
+        </form>
+
+        <p class="text-xs text-gray-400 text-center mt-6">
+            First user to register becomes admin.
+            <a href="/dashboard/register" class="text-blue-600 hover:underline">Register</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

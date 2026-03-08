@@ -70,6 +70,9 @@ def test_settings() -> Settings:
         redis_port=6379,
         redis_password="",
         control_plane_api_key="sk-test-key",
+        jwt_secret_key="test-jwt-secret",
+        jwt_algorithm="HS256",
+        jwt_expire_minutes=60,
         orchestrator_backend="docker",
     )
 
@@ -92,6 +95,7 @@ async def app_client(async_engine, test_settings) -> AsyncIterator[AsyncClient]:
     # Patch settings before importing the app
     with patch("app.core.config.settings", test_settings), \
          patch("app.core.security.settings", test_settings), \
+         patch("app.core.auth.settings", test_settings), \
          patch("app.api.orgs.settings", test_settings), \
          patch("app.db.schema_manager.create_org_schema", new_callable=AsyncMock), \
          patch("app.db.schema_manager.drop_org_schema", new_callable=AsyncMock), \
@@ -122,17 +126,21 @@ async def app_client(async_engine, test_settings) -> AsyncIterator[AsyncClient]:
         mock_get_orch.return_value = mock_orch
         mock_get_orch2.return_value = mock_orch
 
-        # Build the app fresh
+        # Build the app fresh with all routers
         app = FastAPI()
 
+        from app.api.auth import router as auth_router
         from app.api.orgs import router as orgs_router
         from app.api.schemas import HealthResponse
+        from app.api.spend import router as spend_router
 
         @app.get("/health", response_model=HealthResponse, tags=["health"])
         async def health() -> dict:
             return {"status": "ok", "version": "0.1.0", "orchestrator": test_settings.orchestrator_backend}
 
+        app.include_router(auth_router)
         app.include_router(orgs_router)
+        app.include_router(spend_router)
 
         app.dependency_overrides[get_session] = _override_session
 

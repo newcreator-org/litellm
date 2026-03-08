@@ -7,9 +7,12 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.auth import router as auth_router
 from app.api.orgs import router as orgs_router
 from app.api.schemas import HealthResponse
+from app.api.spend import router as spend_router
 from app.core.config import settings
+from app.dashboard.router import router as dashboard_router
 from app.db.models import Base
 from app.db.session import engine
 from app.gateway.router import router as gateway_router
@@ -69,8 +72,17 @@ async def health() -> dict:
 
 # ---------- Routers ----------
 
-# Management API (protected by CP API key)
+# Authentication (JWT + API key)
+app.include_router(auth_router)
+
+# Organisation management (protected by JWT / API key)
 app.include_router(orgs_router)
 
-# Gateway (catch-all proxy) — must be last so /orgs and /health take priority
+# Cost tracking
+app.include_router(spend_router)
+
+# Admin dashboard (server-rendered HTML)
+app.include_router(dashboard_router)
+
+# Gateway (catch-all proxy) — must be last so /orgs, /auth, /dashboard take priority
 app.include_router(gateway_router)
