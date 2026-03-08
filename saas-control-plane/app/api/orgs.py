@@ -22,6 +22,10 @@ from app.orchestrator.factory import get_orchestrator
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/orgs", tags=["organisations"], dependencies=[Depends(require_cp_api_key)])
 
+# Strong references to background tasks so they aren't garbage-collected mid-execution.
+# See https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
+_background_tasks: set[asyncio.Task[None]] = set()
+
 
 def _generate_id() -> str:
     return secrets.token_hex(16)
@@ -65,7 +69,7 @@ async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get
     await session.commit()
 
     # Fire-and-forget background provisioning so POST returns quickly.
-    asyncio.create_task(
+    task = asyncio.create_task(
         _provision_org(
             org_id=org_id,
             slug=body.slug,
@@ -75,6 +79,8 @@ async def create_org(body: OrgCreateRequest, session: AsyncSession = Depends(get
             env_extra=body.env_extra,
         )
     )
+    _background_tasks.add(task)
+    task.add_done_callback(_background_tasks.discard)
 
     return org
 
