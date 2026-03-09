@@ -90,11 +90,11 @@ function LoginPageContent() {
         <Card className="w-full max-w-lg shadow-md">
           <Space direction="vertical" size="middle" className="w-full">
             <div className="text-center">
-              <Title level={2}>🚅 LiteLLM</Title>
-            </div>
+                          <Title level={2}>🚅 Connect LM</Title>
+                        </div>
 
-            <Alert
-              message="Admin UI Disabled"
+                        <Alert
+                          message="Admin UI Disabled"
               description={
                 <>
                   <Paragraph className="text-sm">
@@ -120,12 +120,12 @@ function LoginPageContent() {
       <Card className="w-full max-w-lg shadow-md">
         <Space direction="vertical" size="middle" className="w-full">
           <div className="text-center">
-            <Title level={2}>🚅 LiteLLM</Title>
-          </div>
+                      <Title level={2}>🚅 Connect LM</Title>
+                    </div>
 
-          <div className="text-center">
-            <Title level={3}>Login</Title>
-            <Text type="secondary">Access your LiteLLM Admin UI.</Text>
+                    <div className="text-center">
+                      <Title level={3}>Login</Title>
+                      <Text type="secondary">Access your Connect LM Admin UI.</Text>
           </div>
 
           <Alert
@@ -134,7 +134,7 @@ function LoginPageContent() {
               <>
                 <Paragraph className="text-sm">
                   By default, Username is <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">admin</code> and
-                  Password is your set LiteLLM Proxy
+                  Password is your set Connect LM Proxy
                   <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">MASTER_KEY</code>.
                 </Paragraph>
                 <Paragraph className="text-sm">
@@ -227,7 +227,7 @@ function LoginPageContent() {
             type="info"
             showIcon
             closable
-            message={<Text>Single Sign-On (SSO) is enabled. LiteLLM no longer automatically redirects to the SSO login flow upon loading this page. To re-enable auto-redirect-to-SSO, set <Text code>AUTO_REDIRECT_UI_LOGIN_TO_SSO=true</Text> in your environment configuration.</Text>}
+            message={<Text>Single Sign-On (SSO) is enabled. Connect LM no longer automatically redirects to the SSO login flow upon loading this page. To re-enable auto-redirect-to-SSO, set <Text code>AUTO_REDIRECT_UI_LOGIN_TO_SSO=true</Text> in your environment configuration.</Text>}
           />
         )}
       </Card>

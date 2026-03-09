@@ -559,7 +559,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({
 
             <Alert
               message="Enterprise Feature Notice"
-              description="Parts of policy attachments will be on LiteLLM Enterprise in subsequent releases."
+              description="Parts of policy attachments will be on Connect LM Enterprise in subsequent releases."
               type="warning"
               showIcon
               closable
