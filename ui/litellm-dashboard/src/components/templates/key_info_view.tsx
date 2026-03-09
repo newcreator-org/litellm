@@ -388,7 +388,7 @@ export default function KeyInfoView({
         regenerateDisabled={!premiumUser}
         regenerateTooltip={
           !premiumUser
-            ? "This is a LiteLLM Enterprise feature, and requires a valid key to use."
+            ? "This is a Connect LM Enterprise feature, and requires a valid key to use."
             : undefined
         }
       />
