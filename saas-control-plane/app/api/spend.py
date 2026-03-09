@@ -2,7 +2,7 @@
 
 import json
 import logging
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
@@ -105,7 +105,7 @@ async def _sync_org_spend(org: Organization, session: AsyncSession) -> SpendSync
         org.updated_at = datetime.now(timezone.utc)
 
         # Upsert today's spend log
-        today_str = date.today().isoformat()
+        today_str = datetime.now(timezone.utc).date().isoformat()
         existing_log = (
             await session.execute(
                 select(SpendLog).where(SpendLog.org_id == org.id, SpendLog.date == today_str)

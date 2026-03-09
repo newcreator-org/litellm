@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["gateway"])
 
 # Paths that should NOT be proxied (control-plane management)
-_RESERVED_PREFIXES = ("/orgs", "/health", "/docs", "/openapi.json", "/redoc")
+_RESERVED_PREFIXES = ("/orgs", "/health", "/docs", "/openapi.json", "/redoc", "/auth", "/admin", "/dashboard")
 
 
 async def _resolve_org(request: Request, session: AsyncSession) -> Organization:
