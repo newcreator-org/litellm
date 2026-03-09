@@ -105,12 +105,12 @@
   },
   "survey": {
     "title": "Quick feedback",
-    "description": "Help us improve LiteLLM! Share your experience in 5 quick questions.",
+    "description": "Help us improve Connect LM! Share your experience in 5 quick questions.",
     "shareFeedback": "Share feedback",
     "dontAskAgain": "Don't ask me again",
     "dontAskAgainConfirmation": "Got it, we will not ask again. Reactivate this at any time in the User Menu.",
     "claudeCodeTitle": "Claude Code Feedback",
-    "claudeCodeDescription": "Help us improve your Claude Code experience with LiteLLM! Share your feedback in 4 quick questions."
+    "claudeCodeDescription": "Help us improve your Claude Code experience with Connect LM! Share your feedback in 4 quick questions."
   },
   "nav": {
     "groups": {
@@ -259,8 +259,8 @@
       "createUser": "Create User",
       "selectAgent": "Select Agent",
       "selectAgentPlaceholder": "Select an agent",
-      "agentDescription": "This key will be used by the selected agent for requests to LiteLLM",
-      "agentKeyDescription": "This key will be used by the selected agent to make requests to LiteLLM",
+      "agentDescription": "This key will be used by the selected agent for requests to Connect LM",
+      "agentKeyDescription": "This key will be used by the selected agent to make requests to Connect LM",
       "searchFailed": "Failed to search for users",
       "team": "Team",
       "teamLabel": "Team",
@@ -572,7 +572,7 @@
     "noOrgs": "No Organizations",
     "yourOrganizations": "Your Organizations",
     "clickOrgIdToView": "Click on \"Organization ID\" to view organization details.",
-    "enterpriseFeature": "This is a LiteLLM Enterprise feature, and requires a valid key to use.",
+    "enterpriseFeature": "This is a Connect LM Enterprise feature, and requires a valid key to use.",
     "getTrialKey": "Get a trial key",
     "here": "here",
     "createdSuccessfully": "Organization created successfully",
@@ -799,7 +799,7 @@
       "startTime": "Start Time:",
       "endTime": "End Time:",
       "duration": "Duration:",
-      "litellmOverhead": "LiteLLM Overhead:",
+      "litellmOverhead": "Connect LM Overhead:",
       "retries": "Retries:",
       "requestTags": "Request Tags",
       "metadata": "Metadata",
@@ -824,7 +824,7 @@
       "models": "Models",
       "total": "total",
       "enterpriseFeature": "Enterprise Feature.",
-      "enterpriseDesc": "This is a LiteLLM Enterprise feature, and requires a valid key to use.",
+      "enterpriseDesc": "This is a Connect LM Enterprise feature, and requires a valid key to use.",
       "previewDescription": "Here's a preview of what Audit Logs offer:",
       "tableNames": {
         "keys": "Keys",
@@ -853,7 +853,7 @@
     "addModelsForTeams": "Add models for teams you are an admin for.",
     "addAndManageModels": "Add and manage models for the proxy",
     "missingProvider": "Missing a provider?",
-    "missingProviderDesc": "The LiteLLM engineering team is constantly adding support for new LLM models, providers, endpoints. If you don't see the one you need, let us know and we'll prioritize it.",
+    "missingProviderDesc": "The Connect LM engineering team is constantly adding support for new LLM models, providers, endpoints. If you don't see the one you need, let us know and we'll prioritize it.",
     "requestProvider": "Request Provider",
     "allModels": "All Models",
     "yourModels": "Your Models",
@@ -903,7 +903,7 @@
       "credentials": "Credentials",
       "credentialTypes": "Credential types",
       "reusable": "Reusable",
-      "reusableDesc": "Credentials saved in LiteLLM that can be added to models repeatedly.",
+      "reusableDesc": "Credentials saved in Connect LM that can be added to models repeatedly.",
       "manual": "Manual",
       "manualDesc": "Credentials added directly during model creation or defined in the config file.",
       "createdBy": "Created By",
@@ -921,7 +921,7 @@
       "definedInConfig": "Defined in config",
       "unknownProvider": "Unknown provider",
       "publicModelName": "Public Model Name",
-      "litellmModelName": "LiteLLM Model Name",
+      "litellmModelName": "Connect LM Model Name",
       "unknown": "Unknown",
       "unknownDate": "Unknown date",
       "configFile": "Config file",
@@ -954,7 +954,7 @@
       "selectCallback": "Select a callback",
       "chooseCallback": "Choose a logging callback...",
       "addLoggingCallback": "Add Logging Callback",
-      "docsLogging": "LiteLLM Docs: Logging",
+      "docsLogging": "Connect LM Docs: Logging",
       "addCallback": "Add Callback",
       "adding": "Adding...",
       "editCallbackSettings": "Edit Callback Settings",
@@ -1159,7 +1159,7 @@
   },
   "uiTheme": {
     "title": "UI Theme Customization",
-    "description": "Customize your LiteLLM admin dashboard with a custom logo and favicon.",
+    "description": "Customize your Connect LM admin dashboard with a custom logo and favicon.",
     "customLogoUrl": "Custom Logo URL",
     "customLogoPlaceholder": "https://example.com/logo.png",
     "customLogoHelp": "Enter a URL for your custom logo or leave empty for default",
@@ -1174,14 +1174,14 @@
     "resetFailed": "Failed to reset theme settings"
   },
   "metadata": {
-    "title": "LiteLLM Dashboard",
-    "description": "LiteLLM Proxy Admin UI"
+    "title": "Connect LM Dashboard",
+    "description": "Connect LM Proxy Admin UI"
   },
   "onboarding": {
     "helpButton": "Start guided tour",
     "welcome": {
       "title": "Welcome!",
-      "description": "Welcome to the LiteLLM Dashboard. Let us show you the key features."
+      "description": "Welcome to the Connect LM Dashboard. Let us show you the key features."
     },
     "sidebar": {
       "title": "Sidebar Navigation",

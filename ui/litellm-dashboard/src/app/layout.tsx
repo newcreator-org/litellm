@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ["latin"] });
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  title: "LiteLLM ダッシュボード",
-  description: "LiteLLM プロキシ管理UI",
+  title: "Connect LM ダッシュボード",
+  description: "Connect LM プロキシ管理UI",
   icons: { icon: "./favicon.ico" },
 };
 

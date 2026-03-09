@@ -95,7 +95,7 @@ export const prepareModelAddRequest = async (formValues: Record<string, any>, ac
                 delete litellmExtraParams.litellm_credential_name;
               }
             } catch (error) {
-              NotificationManager.fromBackend("Failed to parse LiteLLM Extra Params: " + error);
+              NotificationManager.fromBackend("Failed to parse Connect LM Extra Params: " + error);
               throw new Error("Failed to parse litellm_extra_params: " + error);
             }
             for (const [key, value] of Object.entries(litellmExtraParams)) {
@@ -109,7 +109,7 @@ export const prepareModelAddRequest = async (formValues: Record<string, any>, ac
             try {
               modelInfoParams = JSON.parse(value);
             } catch (error) {
-              NotificationManager.fromBackend("Failed to parse LiteLLM Extra Params: " + error);
+              NotificationManager.fromBackend("Failed to parse Connect LM Extra Params: " + error);
               throw new Error("Failed to parse litellm_extra_params: " + error);
             }
             for (const [key, value] of Object.entries(modelInfoParams)) {
