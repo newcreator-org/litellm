@@ -104,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   <div className="h-10 max-w-48 flex items-center justify-center overflow-hidden">
                     <img
                       src={imageUrl}
-                      alt="LiteLLM Brand"
+                      alt="Connect LM Brand"
                       className="max-w-full max-h-full w-auto h-auto object-contain"
                     />
                   </div>
@@ -116,7 +116,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <span
                       className="absolute -top-1 -left-2 text-lg animate-bounce"
                       style={{ animationDuration: "2s" }}
-                      title="Thanks for using LiteLLM!"
+                      title="Thanks for using Connect LM!"
                     >
                       🌑
                     </span>

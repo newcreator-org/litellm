@@ -105,12 +105,12 @@
   },
   "survey": {
     "title": "クイックフィードバック",
-    "description": "LiteLLMの改善にご協力ください！5つの簡単な質問にお答えいただけます。",
+    "description": "Connect LMの改善にご協力ください！5つの簡単な質問にお答えいただけます。",
     "shareFeedback": "フィードバックを送信",
     "dontAskAgain": "今後表示しない",
     "dontAskAgainConfirmation": "了解しました。今後は表示しません。ユーザーメニューからいつでも再有効化できます。",
     "claudeCodeTitle": "Claude Codeフィードバック",
-    "claudeCodeDescription": "LiteLLMでのClaude Code体験の改善にご協力ください！4つの簡単な質問にお答えいただけます。"
+    "claudeCodeDescription": "Connect LMでのClaude Code体験の改善にご協力ください！4つの簡単な質問にお答えいただけます。"
   },
   "nav": {
     "groups": {
@@ -259,8 +259,8 @@
       "createUser": "ユーザーを作成",
       "selectAgent": "エージェントを選択",
       "selectAgentPlaceholder": "エージェントを選択",
-      "agentDescription": "このキーは選択されたエージェントがLiteLLMへのリクエストに使用します",
-      "agentKeyDescription": "このキーは選択されたエージェントがLiteLLMへのリクエストに使用します",
+      "agentDescription": "このキーは選択されたエージェントがConnect LMへのリクエストに使用します",
+      "agentKeyDescription": "このキーは選択されたエージェントがConnect LMへのリクエストに使用します",
       "searchFailed": "ユーザーの検索に失敗しました",
       "team": "チーム",
       "teamLabel": "チーム",
@@ -572,7 +572,7 @@
     "noOrgs": "組織がありません",
     "yourOrganizations": "あなたの組織",
     "clickOrgIdToView": "組織の詳細を表示するには\"組織ID\"をクリックしてください。",
-    "enterpriseFeature": "これはLiteLLMエンタープライズ機能です。利用するには有効なキーが必要です。",
+    "enterpriseFeature": "これはConnect LMエンタープライズ機能です。利用するには有効なキーが必要です。",
     "getTrialKey": "トライアルキーを取得",
     "here": "こちら",
     "createdSuccessfully": "組織が正常に作成されました",
@@ -661,9 +661,9 @@
     "dailySpend": "日次支出",
     "topVirtualKeys": "トップ仮想キー",
     "topPublicModelNames": "トップ公開モデル名",
-    "topLitellmModels": "トップLiteLLMモデル",
+    "topLitellmModels": "トップConnect LMモデル",
     "publicModelName": "公開モデル名",
-    "litellmModelName": "LiteLLMモデル名",
+    "litellmModelName": "Connect LMモデル名",
     "spend": "支出",
     "requests": "リクエスト",
     "successful": "成功",
@@ -799,7 +799,7 @@
       "startTime": "開始時間:",
       "endTime": "終了時間:",
       "duration": "所要時間:",
-      "litellmOverhead": "LiteLLMオーバーヘッド:",
+      "litellmOverhead": "Connect LMオーバーヘッド:",
       "retries": "リトライ:",
       "requestTags": "リクエストタグ",
       "metadata": "メタデータ",
@@ -824,7 +824,7 @@
       "models": "モデル",
       "total": "件",
       "enterpriseFeature": "エンタープライズ機能です。",
-      "enterpriseDesc": "これはLiteLLMエンタープライズ機能です。利用するには有効なキーが必要です。",
+      "enterpriseDesc": "これはConnect LMエンタープライズ機能です。利用するには有効なキーが必要です。",
       "previewDescription": "監査ログの機能プレビュー:",
       "tableNames": {
         "keys": "キー",
@@ -853,7 +853,7 @@
     "addModelsForTeams": "管理者であるチームのモデルを追加します。",
     "addAndManageModels": "プロキシのモデルを追加・管理します",
     "missingProvider": "プロバイダーが見つかりませんか？",
-    "missingProviderDesc": "LiteLLMエンジニアリングチームは常に新しいLLMモデル、プロバイダー、エンドポイントのサポートを追加しています。必要なものが見つからない場合はお知らせください。優先的に対応します。",
+    "missingProviderDesc": "Connect LMエンジニアリングチームは常に新しいLLMモデル、プロバイダー、エンドポイントのサポートを追加しています。必要なものが見つからない場合はお知らせください。優先的に対応します。",
     "requestProvider": "プロバイダーをリクエスト",
     "allModels": "全モデル",
     "yourModels": "あなたのモデル",
@@ -903,7 +903,7 @@
       "credentials": "認証情報",
       "credentialTypes": "認証情報の種類",
       "reusable": "再利用可能",
-      "reusableDesc": "LiteLLMに保存された認証情報で、モデルに繰り返し追加できます。",
+      "reusableDesc": "Connect LMに保存された認証情報で、モデルに繰り返し追加できます。",
       "manual": "手動",
       "manualDesc": "モデル作成時に直接追加された認証情報、または設定ファイルで定義された認証情報。",
       "createdBy": "作成者",
@@ -921,7 +921,7 @@
       "definedInConfig": "設定で定義",
       "unknownProvider": "不明なプロバイダー",
       "publicModelName": "公開モデル名",
-      "litellmModelName": "LiteLLMモデル名",
+      "litellmModelName": "Connect LMモデル名",
       "unknown": "不明",
       "unknownDate": "不明な日付",
       "configFile": "設定ファイル",
@@ -954,7 +954,7 @@
       "selectCallback": "コールバックを選択してください",
       "chooseCallback": "ログコールバックを選択...",
       "addLoggingCallback": "ログコールバックを追加",
-      "docsLogging": "LiteLLMドキュメント: ログ",
+      "docsLogging": "Connect LMドキュメント: ログ",
       "addCallback": "コールバックを追加",
       "adding": "追加中...",
       "editCallbackSettings": "コールバック設定を編集",
@@ -1159,7 +1159,7 @@
   },
   "uiTheme": {
     "title": "UIテーマカスタマイズ",
-    "description": "カスタムロゴとファビコンでLiteLLM管理ダッシュボードをカスタマイズします。",
+    "description": "カスタムロゴとファビコンでConnect LM管理ダッシュボードをカスタマイズします。",
     "customLogoUrl": "カスタムロゴURL",
     "customLogoPlaceholder": "https://example.com/logo.png",
     "customLogoHelp": "カスタムロゴのURLを入力するか、デフォルトの場合は空にしてください",
@@ -1174,14 +1174,14 @@
     "resetFailed": "テーマ設定のリセットに失敗しました"
   },
   "metadata": {
-    "title": "LiteLLM ダッシュボード",
-    "description": "LiteLLM プロキシ管理UI"
+    "title": "Connect LM ダッシュボード",
+    "description": "Connect LM プロキシ管理UI"
   },
   "onboarding": {
     "helpButton": "ガイドツアーを開始",
     "welcome": {
       "title": "ようこそ！",
-      "description": "LiteLLM ダッシュボードへようこそ。主要な機能をご紹介します。"
+      "description": "Connect LM ダッシュボードへようこそ。主要な機能をご紹介します。"
     },
     "sidebar": {
       "title": "サイドバーナビゲーション",

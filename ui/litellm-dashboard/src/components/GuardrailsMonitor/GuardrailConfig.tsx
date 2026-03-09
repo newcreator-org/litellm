@@ -120,7 +120,7 @@ export function GuardrailConfig({
               options={[
                 { value: "bedrock", label: "AWS Bedrock Guardrails" },
                 { value: "google", label: "Google Cloud AI Safety" },
-                { value: "litellm", label: "LiteLLM Built-in" },
+                { value: "litellm", label: "Connect LM Built-in" },
                 { value: "custom", label: "Custom Code" },
               ]}
             />

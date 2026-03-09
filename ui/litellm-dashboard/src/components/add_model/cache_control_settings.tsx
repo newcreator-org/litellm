@@ -48,7 +48,7 @@ const CacheControlSettings: React.FC<CacheControlSettingsProps> = ({
         name="cache_control"
         valuePropName="checked"
         className="mb-4"
-        tooltip="Tell litellm where to inject cache control checkpoints. You can specify either by role (to apply to all messages of that role) or by specific message index."
+        tooltip="Tell Connect LM where to inject cache control checkpoints. You can specify either by role (to apply to all messages of that role) or by specific message index."
       >
         <Switch onChange={onCacheControlChange} className="bg-gray-600" />
       </Form.Item>
@@ -82,7 +82,7 @@ const CacheControlSettings: React.FC<CacheControlSettingsProps> = ({
                       name={[field.name, "role"]}
                       className="mb-0"
                       style={{ width: "180px" }}
-                      tooltip="LiteLLM will mark all messages of this role as cacheable"
+                      tooltip="Connect LM will mark all messages of this role as cacheable"
                     >
                       <Select
                         placeholder="Select a role"
@@ -105,7 +105,7 @@ const CacheControlSettings: React.FC<CacheControlSettingsProps> = ({
                       name={[field.name, "index"]}
                       className="mb-0"
                       style={{ width: "180px" }}
-                      tooltip="(Optional) If set litellm will mark the message at this index as cacheable"
+                      tooltip="(Optional) If set Connect LM will mark the message at this index as cacheable"
                     >
                       <NumericalInput
                         type="number"
