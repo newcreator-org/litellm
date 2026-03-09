@@ -33,7 +33,7 @@ const APIReferenceView: React.FC<ApiRefProps> = ({ proxySettings }) => {
           </div>
 
           <Text className="mt-2 mb-2">
-            LiteLLM is OpenAI Compatible. This means your API Key works with the OpenAI SDK. Just replace the base_url
+            Connect LM is OpenAI Compatible. This means your API Key works with the OpenAI SDK. Just replace the base_url
             to point to your litellm proxy. Example Below{" "}
           </Text>
 
